@@ -193,16 +193,112 @@ Instance types: Only GPU is suppported for training on a single machine. Inferen
 
 ## Random Cut Forest in Sagemaker
 
+A random cut forest is used for anomaly detection, undergoes unsupervised learning and detects unexpected spikes in time series data. It assigns an anomaly score to each data point and is based on an algorithm developed by Amazon. The algorithm creates a forest of trees where each tree is a partition of the training data. Looks at expected change in complexity of the tree as a result of adding a point into it. The data is sampled randomly, and then trained. 
+
+Training input: requires Record-IO Protobuf or CSV and can use file, pipe mode on either.
+
+### Important hyperparmeters:
+
+1. Num_trees: increasing this reduces the noise in the data
+2. Num_samples_per_tree: Should be chose such that 1/num_samples_per_tree is approx the same as ratio of anomalous to normal data
+
+Instance types: does not take advantage of GPUs, use M4/C4/C5 for training and ml.c5.xl for inference
+
 ## Neural Topic Model in Sagemaker
+
+Used to organise documents into topics or classify/summarise documents based on topics. Undergoes unsupervised ML and uses an algorithm called neural variational inference for training. Users can define how many topics are needed and these topics are a latent representation based on top ranking words. 
+
+Training input: expects four data channels, train is required with validation/test/auxiliary as optional. recordIO-protobuf or csv is used as data input and word must be tokenized into integers. Data input can be in file or pipe mode.
+
+### Important hyperparameters:
+
+1. Lowering mini_batch_size and learning_rate can reduce validation loss. This comes at the expense of training time.
+2. Num_topics
+
+Instance types: GPU is recommended for training with CPU used for inference and being cheaper.
 
 ## Latent Dirichlet Allocation LDA in Sagemaker
 
+LDA is another topic modelling algorithm which is not the same as deep learning. Undergoes unsupervised learning where the topics themselved are unlabelled. Can be used for things other than words such as clustering customer based on purchases.
+
+Training input: recordIO-protobuf or csv data is used, each document has counts for every word in vocabularly. Pipe mode as method of delivery is the only one supported
+
+### Important hyperparameters:
+
+1. Num_topics
+2. Alpha0: smaller values generate sparse topic mixtures whilst larger values > 1.0 produce uniform mixtures
+
+Instance types: single instance CPU used for training
+
 ## K-Nearest-Neighbours KNN in Sagemaker
+
+A simple classification or regression algorithm which finds the closest K points to a sample point and returns the most frequent label or average value. The training channel contains data whilst the test channel emits accuracy or MSE. Data is first sampled, sagemaker uses a dimensionality reduction stage and builds an index to look up neighbours. The model is serialised and queried for the nearest K.
+
+Training input: recordIO-protobuf or csv data is used with the first column used as a label. File or pipe mode can be used on either.
+
+### Important hyperparameters:
+
+1. K!
+2. Sample_size
+
+Instance types: Ml.m5.2xlarge, Ml.p2.xlarge used for training CPU/GPU. For inference use CPU for lower latency and GPU for higher throughput on larger batches of data. 
 
 ## K-means Clustering in Sagemaker
 
+K-means is unsupervised clustering which divides data into K groups where members of a group are as similar as possible to each other. Every observation is mapped to n-dimensional space where n = no. of features. Works to optimise the centre of K clusters. 
+
+Training Input: recordIO-Protobuf or CSV data is used in either file or pipe mode.
+
+### Important Hyperparameters: 
+
+1. K! - choosing K is tricky and so plot within-cluster sum of squares as function of K
+2. Mini_batch_size
+3. Extra_center_factor
+4. Init_method
+
+Instance types: CPU or GPU but CPU is recommended with only one GPU instance user per GPU. ml.g4dn.large is used for GPU.
+
 ## Principal Component Analysis PCA in Sagemaker
+
+PCA is used for dimensionality reduction where high dimensionality data is projects into a lower dinension to minimise the loss of information. The reduced dimenions are called components. The first component has the largest possible variability. PCA is a method of unsupervised ML. The covariance metric is created then singular valuar decomposition is used. There are two modes: regular mode for sparse data and a moderate number of observations, randomised for large number of observations and features.
+
+Training Input: recordIO-profotbuf or csv, can use file or pipe modes on either file type.
+
+### Important Hyperparameters:
+
+1. Algorithm_mode
+2. Subtract_mean: unbias data
+
+Instance types: CPU or GPU can be used and it depends on the specifics of the input data about which one to use.
 
 ## Factorization Machines in Sagemaker
 
+Factorisation machines are used for dealing with sparse data. This algorithm can be used for click prediction, item recommendations. It comes about as an individual doesnt interact with most pages/products, there is sparse data. A form of supervised ML, classification or regression and limited to pair-wise interactions.
+
+Factorisation machines finds factors which can be used to predict a classification, ie whether a purchase has been made or not. Usually used in the context of recommender systems. 
+
+Training input: recordIO-Protobuf with Float32. If there is sparse data then this means using csv as input data isnt practical.
+
+### Important hyperparameters:
+
+1. Initialisatiom methods for bias, factors and linear terms
+2. Uniform, normal or constant
+3. Can tune properties of each method
+
+Instance types: CPU or GPU where CPU is recommended and GPU works with dense data
+
 ## IP Insights in Sagemaker
+
+Unsupervised learning of IP address usage patterns, identifies suspicious behaviour from IP addresses such as identifing logins from anomalous IPs and identifing accounts which create resources from anomalous IPs. Uses a neural network to learn latent vector representations of entities and IP addresses. Entities are hashed and embedded with many entities needing a large hash size.
+
+IP insights can also generate negative samples during training by randomly pairing entities and IPs. 
+
+Training input: usernames, accountids can be fed in directly with no need for pre processing of this data. CSV input only with entities and IPs being a part of that csv file. 
+
+### Important hyperparameters:
+
+1. Num_entity_vectors: hash_size, set to twice the number of unique entity identifiers.
+2. Vector_dim: size of embedding vectors, scales model size, too large a vector dimension results in overfitting.
+3. Epochs, learning_rate, batch_size etc.
+
+Instance types: CPU or GPU can be used but GPU is recommended or multiple GPUs. The size of the instance.

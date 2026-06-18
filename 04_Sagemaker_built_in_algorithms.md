@@ -1,304 +1,510 @@
-# Sagemaker Built in Algorithms
+# Sagemaker Built In Algorithms
 
 ## Introducing Sagemaker
 
-Sagemaker is built to handle the entire ML worklflow. From model deployment to evaluating results in production, fetching/cleaning and preparing data to training and evaluating a model.
+Sagemaker is built to handle the full ML workflow, from preparing and cleaning data to training, evaluating, and deploying models in production.
 
-See section 02 on how sagemaker deploy and trains models using S3 and ECR.
+See section 02 for how Sagemaker uses S3 and ECR for training and deployment.
 
 ## Sagemaker Input Modes
 
-There are several input modes in sagemaker for the ingress of data: 
+There are several input modes in Sagemaker for ingesting training data.
 
-1. S3 File mode: this is the default and copies training data from S3 to local directory in a docker container
-2. S3 Fast file mode: This is akin to 'pipe mode' and training of the model can begin without waiting for the data to be downloaded. Works best with sequential access to data and not random access.
-3. Pipe mode: streams data directly from S3, replaced by fast file. 
-4. Amazon S3 express one zone: high performance storage class in one AZ, works with file, fast file and pipe modes.
-5. Amazon FSx Lustre: scales to 100s of GBs of throughput and millions of IOPS with low latency, works in a single AZ and requires a VPC.
-6. Amazon EFS: Requires data to be in EFS already and also requires a VPC.
+1. S3 file mode: the default mode; copies training data from S3 into a local directory in a Docker container.
+2. S3 fast file mode: similar to pipe mode; training can begin before the data is fully downloaded and works best with sequential access.
+3. Pipe mode: streams data directly from S3.
+4. Amazon S3 Express One Zone: high-performance storage in a single AZ; works with file, fast file, and pipe modes.
+5. Amazon FSx for Lustre: high-throughput, low-latency storage for large workloads; runs in a single AZ and requires a VPC.
+6. Amazon EFS: requires data to already be in EFS and also requires a VPC.
 
 ## Linear Learner in Sagemaker
 
-Linear learner is for understanding linear regression, through fitting a line to training data and also predictions based on a line. The linear learner can handle both regression and classification predictions. For classification, a linear threshold function is used, can do binary or mult-class.
+Linear Learner is used for regression and classification by fitting a linear model to training data.
 
-Linear learner goes through preprocessing of data which is normnalised (all features have the same weight). The input data is shuffled and then training occurs using stochastic gradient descent, multiple models can be optimised in parallel. Then validation occurs where the most optimal model is selected.
+It can:
 
-Training input: Prefers RecordIO-wrapped protobuf float 32 data only, can use csv and will assume the first column to the label. Mode of delivery through file or pipe mode both supported.
+1. Handle both regression and classification.
+2. Use a linear threshold function for classification.
+3. Work with binary and multiclass problems.
 
-Linear learner uses instance types which are single or multi CPU/GPU. Multi-GPU often doesn't help speed up the process or make the process more powerful.
+Linear Learner preprocesses data by normalising features so they have similar weight. Training data is shuffled, then optimized with stochastic gradient descent, and multiple models can be trained in parallel before the best one is selected through validation.
 
-### Imporant hyperparameters:
+Training input:
 
-1. Balance_multiclass_weights: gives each class equal importance in loss functions
-2. Learning_rate, mini_batch_size
-3. L1: regularisation
-4. Wd: Weight Decay (L2 regularisation)
-5. target_precision: Holds precision at this value while maximising recall
-6. target_recall: Holds recall at this value while maximising precision.
+- Prefers RecordIO-wrapped protobuf float32 data.
+- Can also use CSV, where the first column is treated as the label.
+- Supports file mode and pipe mode.
+
+Instance types:
+
+- Works on single or multi CPU/GPU instances.
+- Multi-GPU usually does not add much benefit.
+
+### Linear Learner Hyperparameters
+
+1. Balance_multiclass_weights: gives each class equal importance in the loss function.
+2. Learning_rate and mini_batch_size.
+3. L1: regularisation.
+4. Wd: weight decay, which is L2 regularisation.
+5. target_precision: holds precision at a target value while maximising recall.
+6. target_recall: holds recall at a target value while maximising precision.
 
 ## XGBoost in Sagemaker
 
-XGBoost is a decision-tree-based ensemble Machine Learning algorithm that uses a gradient boosting framework. It is designed for speed and performance, and it has become one of the most popular algorithms for structured data. XGBoost can be used for both regression and classification tasks.
+XGBoost is a decision-tree-based ensemble algorithm that uses gradient boosting. It is popular for structured data and can be used for regression and classification.
 
-Training input: XGBoost is not made for sagemaker since its open source. It takes csv or libsvm input data and has recently been extended to recordIO-Protobuf and parquet.
+Training input:
 
-XGBoost starts with models being serialised/deserialised using pickle. Can be be used as a framework within notebooks, or as a bullt in sagemaker algorithm.
+- Supports CSV and libSVM.
+- Has also been extended to support RecordIO-Protobuf and Parquet.
 
-### Important hyperparameters: 
+XGBoost can be used as a framework in notebooks or as a built-in SageMaker algorithm.
 
-XGBoost has alot of parameters but some of these are important:
+### XGBoost Hyperparameters
 
-1. Subsample: prevents overfitting
-2. Eta: step size shrinkage which prevents overfitting
-3. Gamma: Minimum loss reduction to create a partition
-4. Alpha: L1 regularisation term, larger alpha = more conservative
-5. Lambda: L2 regularisation term, larger lambda = more conservative
-6. eval_metric: optimise on AUC, errors, RMSE - if you care about false positives more than accuracy, you can use AUC
-7. scale_post_weight: Adjusts balance of positive and negative weights, helpful for unbalanced classes
-8. max_depth: Max depth of the tree, too high and you can get overfitting.
+1. Subsample: helps prevent overfitting.
+2. Eta: learning rate or step-size shrinkage.
+3. Gamma: minimum loss reduction needed to create a partition.
+4. Alpha: L1 regularisation term.
+5. Lambda: L2 regularisation term.
+6. eval_metric: common choices include AUC, error, and RMSE.
+7. scale_pos_weight: adjusts the balance of positive and negative weights for imbalanced data.
+8. max_depth: maximum tree depth; too high can lead to overfitting.
 
-XGBoost can use memory boind instances, not compute bound. M5 is a good choice, single instance GPU training is available.
+Instance types:
+
+- Memory-bound instances are a better fit than compute-bound ones.
+- M5 is a good choice.
+- Single-instance GPU training is available.
 
 ## LightGBM in Sagemaker
 
-LightGBM is a gradient boosting decision tree which predicts variables within an ensemble of estimates from simpler models. Can be used for classification, regression and ranking. Requires text/csv for training and for inference. Training and optional validation channels can be provided.
+LightGBM is a gradient-boosted decision tree algorithm used for classification, regression, and ranking.
 
-### Important hyperparameters:
+Training input:
 
-1. Learning_rate
-2. Num_leaves: max number of leaves per tree
-3. Feature_fraction: subset of features per tree
-4. Bagging_fraction: similar to feature_fraxction but randmoly sampled
-5. Bagging_freq: how often bagging is done
-6. Max_depth
-7. Min_data_in_leaf: min amount of data in one leaf, can address overfitting
+- Uses text or CSV for training and inference.
+- Supports training and optional validation channels.
 
-LightGBM often uses single of multi instance CPU training, often uses general purpose over compute optimised. M5 is the better option and enough memory is always needed. 
+### LightGBM Hyperparameters
+
+1. Learning_rate.
+2. Num_leaves: maximum number of leaves per tree.
+3. Feature_fraction: subset of features used per tree.
+4. Bagging_fraction: similar to feature_fraction, but sampled randomly.
+5. Bagging_freq: how often bagging is performed.
+6. Max_depth.
+7. Min_data_in_leaf: minimum data needed in one leaf; helps reduce overfitting.
+
+Instance types:
+
+- Often uses CPU instances.
+- General purpose or compute-optimised instances can both work.
+- M5 is a good option when enough memory is available.
 
 ## Seq2Seq in Sagemaker
 
-Seq2seq is where the input is a sequence of tokens and output is a sequence of tokens. Used for machine translation, text summarisation, speech to text and implemented with RNNs and CNNs with attention.
+Seq2Seq maps a sequence of input tokens to a sequence of output tokens. It is used for machine translation, text summarisation, and speech-to-text.
 
-Training input: RecordIO-Protobuf where tokens must be integers, start with tokenized text files and convert to protobuf using sample code. Must provide training data, validation data and vocab files for Seq2Seq to work.
+Training input:
 
-Instance types which are used for Seq2Seq are GPU instance types e.g. P3, can only use a single machine for training. 
+- Uses RecordIO-Protobuf.
+- Tokens must be integers.
+- Requires training data, validation data, and vocabulary files.
 
-### Important hyperparameters:
+Instance types:
 
-1. Batch_size
-2. Optimizer_type (adam, sgd, rmsprop)
-3. Learning_rate
-4. Num_layers_encoder, Num_layers_decoder
+- Typically uses GPU instances such as P3.
+- Training is usually done on a single machine.
+
+### Seq2Seq Hyperparameters
+
+1. Batch_size.
+2. Optimizer_type: for example adam, sgd, or rmsprop.
+3. Learning_rate.
+4. Num_layers_encoder and Num_layers_decoder.
 
 ## DeepAR in Sagemaker
 
-DeepAR is used for forecasting one dimensional time series data. Uses RNNs and allows you to train the same model over several related time series. It allows you to find frequencies and seasonality. Users can use the entire dataset as a test set, and remove the last time points for training. Don't use large values for prediction length (>400)
+DeepAR is used for forecasting one-dimensional time series data. It uses RNNs and can train a single model across many related time series.
 
-Training input: JSON, gzip or parquet. Each record must contsin the starting timestamp and the time series values. Categorical features and dynamic_features are welcome to be used. 
+It is useful for:
 
-### Important hyperparameters:
+1. Detecting seasonality.
+2. Identifying frequency patterns.
+3. Training with many related time series at once.
 
-1. Context_length: number of time points the model sees before making a prediction
-2. Epochs
-3. Mini_batch_size
-4. Learning_rate
-5. Num_cells
+Training input:
 
-DeepAR can use CPU or GPU instance types, single or multi machine. Best is to start with CPU and then change to GPU is necessary. Larger instances maybe needed for tuning, CPU only for inferences.
+- Supports JSON, gzip, and Parquet.
+- Each record must contain the starting timestamp and the time series values.
+- Categorical features and dynamic features are supported.
+
+### DeepAR Hyperparameters
+
+1. Context_length: number of time points seen before making a prediction.
+2. Epochs.
+3. Mini_batch_size.
+4. Learning_rate.
+5. Num_cells.
+
+Instance types:
+
+- Can run on CPU or GPU instances.
+- Can be single-machine or multi-machine.
+- A common approach is to start on CPU and move to GPU if needed.
+- Larger instances may be needed for tuning, while CPU is often enough for inference.
 
 ## BlazingText in Sagemaker
 
-BlazingText is used for text classification and predicting labels for a sentence, useful in web searches and information retrieval. Word2Vec creates a vector representation of words, semantically similar words are represented by vectors close to each other - this is called word embedding. Useful for NLP but blazingtext is not an NLP algorithm.
+BlazingText is used for text classification and Word2Vec embeddings.
 
-Training input: for supervised mode, there is one sentence per line and the first word in the sentence is the string __label__ followed by the label. Also augmented manifest text format is used for blazingtext. Word2Vec uses one text file with one training sentence per line. 
+It is useful for:
 
-### Important hyperparameters:
+1. Text classification.
+2. Predicting labels for a sentence.
+3. Word embeddings where semantically similar words have nearby vectors.
+
+Training input:
+
+- Supervised mode uses one sentence per line.
+- Each label is prefixed with `__label__`.
+- Augmented manifest text format is also supported.
+- Word2Vec uses one training sentence per line.
+
+### BlazingText Hyperparameters
 
 1. Word2Vec:
-    - Mode (batch_skipgram, skipgram, cbow)
-    - Learning_rate
-    - Window_size
-    - Vector_dim
-    - Negative_samples
+   - Mode: batch_skipgram, skipgram, or cbow.
+   - Learning_rate.
+   - Window_size.
+   - Vector_dim.
+   - Negative_samples.
 2. Text classification:
-    - Epochs
-    - Learning_rate
-    - Word_ngrams
-    - Vector_dim
+   - Epochs.
+   - Learning_rate.
+   - Word_ngrams.
+   - Vector_dim.
 
-Instance types: For cbow and skipgram, it is recommended to use a single ml.p3.2xlarge, for batch_skipgram use multiple CPU instances. For text classification, C5 instance types are recommended if less than 2GB of training data.
+Instance types:
+
+- For cbow and skipgram, a single `ml.p3.2xlarge` is recommended.
+- For batch_skipgram, multiple CPU instances can be used.
+- For text classification, C5 instances are recommended when training data is under 2 GB.
 
 ## Object2Vec in Sagemaker
 
-Object2Vec is used for objects and creating low dimensional dense embeddings of high dimensional objects. Generalised to handle things other than words. Compute the nearest neighbours of objects, visualise clusters and provide recommendations.
+Object2Vec creates low-dimensional embeddings for high-dimensional objects and is useful for recommendations and clustering.
 
-Object2Vec processes data into JSON lines and shuffles it. The model trains with two input channels, two encoders and a comparator. The comparator is followed by a feed forward neural network.
+It works by:
 
-Training input: data must be tokenized into integers, and training data must consist of pairs of tokens and/or sequences of tokens.
+1. Processing data into JSON lines.
+2. Shuffling the inputs.
+3. Training with two input channels, two encoders, and a comparator.
+4. Passing the comparator output through a feed-forward neural network.
 
-### Important hyperparameters:
+Training input:
 
-1. Deep Learning: dropout, early stopping, epochs, learning rate, batch size, layers, activation function, optimizer, weight decay
-2. Enc1_network, Enc2_network 
+- Data must be tokenized into integers.
+- Training data must contain pairs of tokens or sequences of tokens.
 
-Instance types: Can only train on a single machine CPU or GPU, multi GPU is okay. Most common instance types are: ml.m5.2xlarge, ml.p2.xlarge, if needed can go up to 4xlarge or 12xlarge. For inference, ml.p3.2xlarge is used with inference_preferred_mode.
+### Object2Vec Hyperparameters
+
+1. Deep learning settings such as dropout, early stopping, epochs, learning rate, batch size, layers, activation function, optimizer, and weight decay.
+2. Enc1_network and Enc2_network.
+
+Instance types:
+
+- Trains on a single machine CPU or GPU.
+- Multi-GPU is supported.
+- Common instance types include `ml.m5.2xlarge` and `ml.p2.xlarge`.
+- For inference, `ml.p3.2xlarge` is used with `inference_preferred_mode`.
 
 ## Object Detection in Sagemaker
 
-Object detection is used for identifying objects in an image with bounding boxes. Detects and classifies objects with a single deep neural network. Classes are accompanied by confidence scores. Can train from scratch or use pre trained models based on Imagenet. There are two variants: MNXet and tensorflow, takes an image as an input and outputs all instances of objects in the image with categories and confidence scores. 
+Object detection identifies objects in images with bounding boxes and confidence scores.
 
-MXNet uses a CNN with single shot multibox detector algorithm and uses flip, rescale and jitter to avoid overfitting. Tensorflow uses ResNet, efficientNet, mobilenet models from the tensorflow model garden.
+It can:
 
-Training input: MXNet requires RecordIO or image in jpg, png - a JSON file with annotation data for each image needs to be supplied
+1. Detect and classify objects in a single deep neural network.
+2. Train from scratch or use pretrained models based on ImageNet.
+3. Use either MXNet or TensorFlow implementations.
 
-### Important hyperparameters:
+MXNet uses a CNN with a single-shot multibox detector and augmentation such as flip, rescale, and jitter. TensorFlow uses models such as ResNet, EfficientNet, and MobileNet from the TensorFlow model garden.
 
-1. mini_batch_size
-2. Learning_rate
-3. Optimizer - sgd, adam, rmsprop, adadelta
+Training input:
 
-Instance types used for object detection are GPUs only, multi GPU and multi machine are okay, CPU or GPU is only used for inference.
+- MXNet uses RecordIO or JPG/PNG images.
+- A JSON file with annotation data is required.
+
+### Object Detection Hyperparameters
+
+1. mini_batch_size.
+2. Learning_rate.
+3. Optimizer: sgd, adam, rmsprop, or adadelta.
+
+Instance types:
+
+- Training uses GPU-only instances.
+- Multi-GPU and multi-machine are supported.
+- CPU or GPU can be used for inference.
 
 ## Image Classification in Sagemaker
 
-Assigning one or more labels to an image, image classification doesnt tell you what the objects are but just what the objects are in the image. Its used as seperate algorithms for MXNet and tensorflow. 
+Image classification assigns one or more labels to an image, but it does not identify the objects inside the image.
 
-- MXNet: has full training mode which runs image classification with random weights, transfer learning mode which has pre trained weights.
-- Tensorflow: Uses various tensorflow hub models for image classification.
+Implementation notes:
 
-### Important hyerparameters:
+- MXNet supports full training mode with random weights.
+- MXNet also supports transfer learning with pretrained weights.
+- TensorFlow uses models from TensorFlow Hub.
 
-1. Batch_size
-2. Learning_rate
-3. Optimizer
-4. Weight_decay, beta1, beta2, eps, gamma
+### Image Classification Hyperparameters
 
-Instance types: GPU usesd for training with CPU or GPU used for inference.
+1. Batch_size.
+2. Learning_rate.
+3. Optimizer.
+4. Weight_decay, beta1, beta2, eps, and gamma.
+
+Instance types:
+
+- GPU is used for training.
+- CPU or GPU can be used for inference.
 
 ## Semantic Segmentation in Sagemaker
 
-Pixel level object classification which is different from image classification that assigns labels to whole images. Different from object detection as that assigns labels to bounding boxes. Semantic segmentation produces a segmentation mask. 
+Semantic segmentation performs pixel-level classification and produces a segmentation mask.
 
-Training input: JPG and PNG images with annotations, these are valid for training and validation. Label maps to describe annotations. There is also augmented manifest image format which is supported for pipe mode. 
+It differs from:
 
-Built on MXNet Gluon and Gluon CV. There is a choice of 3 algorithms which can be used such as fully convolutional network, pyramid scene parsing and deeplabv3. Incremental training or training from scratch is supported too. 
+1. Image classification, which labels whole images.
+2. Object detection, which labels bounding boxes.
 
-### Important hyperparameters:
+Training input:
 
-1. Epochs, learning_rate, batch_size, optimizer
-2. Algorithm
-3. Backbone
+- JPG and PNG images with annotations.
+- Label maps are used to describe annotations.
+- Augmented manifest image format is supported for pipe mode.
 
-Instance types: Only GPU is suppported for training on a single machine. Inference is supported on CPU or GPU. 
+The algorithm is built on MXNet Gluon and GluonCV, and supported models include fully convolutional network, pyramid scene parsing, and DeepLabv3.
+
+### Semantic Segmentation Hyperparameters
+
+1. Epochs, learning_rate, batch_size, and optimizer.
+2. Algorithm.
+3. Backbone.
+
+Instance types:
+
+- Training requires GPU on a single machine.
+- Inference can use CPU or GPU.
 
 ## Random Cut Forest in Sagemaker
 
-A random cut forest is used for anomaly detection, undergoes unsupervised learning and detects unexpected spikes in time series data. It assigns an anomaly score to each data point and is based on an algorithm developed by Amazon. The algorithm creates a forest of trees where each tree is a partition of the training data. Looks at expected change in complexity of the tree as a result of adding a point into it. The data is sampled randomly, and then trained. 
+Random Cut Forest is used for anomaly detection and is effective for unexpected spikes in time series data.
 
-Training input: requires Record-IO Protobuf or CSV and can use file, pipe mode on either.
+It works by:
 
-### Important hyperparmeters:
+1. Sampling the data randomly.
+2. Building a forest of trees where each tree partitions the training data.
+3. Measuring the expected change in tree complexity when a point is added.
+4. Assigning an anomaly score to each data point.
 
-1. Num_trees: increasing this reduces the noise in the data
-2. Num_samples_per_tree: Should be chose such that 1/num_samples_per_tree is approx the same as ratio of anomalous to normal data
+Training input:
 
-Instance types: does not take advantage of GPUs, use M4/C4/C5 for training and ml.c5.xl for inference
+- Uses RecordIO-Protobuf or CSV.
+- Supports file mode and pipe mode.
+
+### Random Cut Forest Hyperparameters
+
+1. Num_trees: more trees reduce noise.
+2. Num_samples_per_tree: should be chosen so that the inverse is roughly the ratio of anomalous to normal data.
+
+Instance types:
+
+- Does not benefit from GPUs.
+- Use M4, C4, or C5 for training.
+- Use `ml.c5.xl` for inference.
 
 ## Neural Topic Model in Sagemaker
 
-Used to organise documents into topics or classify/summarise documents based on topics. Undergoes unsupervised ML and uses an algorithm called neural variational inference for training. Users can define how many topics are needed and these topics are a latent representation based on top ranking words. 
+Neural Topic Model is used to organize documents into topics or classify and summarise them based on topic structure.
 
-Training input: expects four data channels, train is required with validation/test/auxiliary as optional. recordIO-protobuf or csv is used as data input and word must be tokenized into integers. Data input can be in file or pipe mode.
+It uses unsupervised learning and neural variational inference.
 
-### Important hyperparameters:
+Training input:
 
-1. Lowering mini_batch_size and learning_rate can reduce validation loss. This comes at the expense of training time.
-2. Num_topics
+- Expects four data channels.
+- Train is required; validation, test, and auxiliary are optional.
+- Uses RecordIO-Protobuf or CSV.
+- Words must be tokenized into integers.
+- Supports file mode and pipe mode.
 
-Instance types: GPU is recommended for training with CPU used for inference and being cheaper.
+### Neural Topic Model Hyperparameters
 
-## Latent Dirichlet Allocation LDA in Sagemaker
+1. Lowering mini_batch_size and learning_rate can reduce validation loss, but increases training time.
+2. Num_topics.
 
-LDA is another topic modelling algorithm which is not the same as deep learning. Undergoes unsupervised learning where the topics themselved are unlabelled. Can be used for things other than words such as clustering customer based on purchases.
+Instance types:
 
-Training input: recordIO-protobuf or csv data is used, each document has counts for every word in vocabularly. Pipe mode as method of delivery is the only one supported
+- GPU is recommended for training.
+- CPU is cheaper for inference.
 
-### Important hyperparameters:
+## Latent Dirichlet Allocation in Sagemaker
 
-1. Num_topics
-2. Alpha0: smaller values generate sparse topic mixtures whilst larger values > 1.0 produce uniform mixtures
+LDA is another topic modelling algorithm and is not deep learning.
 
-Instance types: single instance CPU used for training
+It can be used for:
 
-## K-Nearest-Neighbours KNN in Sagemaker
+1. Topic discovery.
+2. Document clustering.
+3. Grouping customers by purchase patterns or similar behaviour.
 
-A simple classification or regression algorithm which finds the closest K points to a sample point and returns the most frequent label or average value. The training channel contains data whilst the test channel emits accuracy or MSE. Data is first sampled, sagemaker uses a dimensionality reduction stage and builds an index to look up neighbours. The model is serialised and queried for the nearest K.
+Training input:
 
-Training input: recordIO-protobuf or csv data is used with the first column used as a label. File or pipe mode can be used on either.
+- Uses RecordIO-Protobuf or CSV.
+- Each document contains counts for every word in the vocabulary.
+- Only pipe mode is supported.
 
-### Important hyperparameters:
+### LDA Hyperparameters
 
-1. K!
-2. Sample_size
+1. Num_topics.
+2. Alpha0: smaller values create sparse topic mixtures; values above 1.0 produce more uniform mixtures.
 
-Instance types: Ml.m5.2xlarge, Ml.p2.xlarge used for training CPU/GPU. For inference use CPU for lower latency and GPU for higher throughput on larger batches of data. 
+Instance types:
 
-## K-means Clustering in Sagemaker
+- Single-instance CPU training is used.
 
-K-means is unsupervised clustering which divides data into K groups where members of a group are as similar as possible to each other. Every observation is mapped to n-dimensional space where n = no. of features. Works to optimise the centre of K clusters. 
+## K-Nearest Neighbours in Sagemaker
 
-Training Input: recordIO-Protobuf or CSV data is used in either file or pipe mode.
+KNN is a simple classification or regression algorithm that finds the closest K points to a sample and returns the most frequent label or average value.
 
-### Important Hyperparameters: 
+The workflow is:
 
-1. K! - choosing K is tricky and so plot within-cluster sum of squares as function of K
-2. Mini_batch_size
-3. Extra_center_factor
-4. Init_method
+1. Train on the data.
+2. Build an index to look up neighbours.
+3. Query the model for the nearest K points.
 
-Instance types: CPU or GPU but CPU is recommended with only one GPU instance user per GPU. ml.g4dn.large is used for GPU.
+Training input:
 
-## Principal Component Analysis PCA in Sagemaker
+- Uses RecordIO-Protobuf or CSV.
+- The first column is used as the label.
+- Supports file mode and pipe mode.
 
-PCA is used for dimensionality reduction where high dimensionality data is projects into a lower dinension to minimise the loss of information. The reduced dimenions are called components. The first component has the largest possible variability. PCA is a method of unsupervised ML. The covariance metric is created then singular valuar decomposition is used. There are two modes: regular mode for sparse data and a moderate number of observations, randomised for large number of observations and features.
+### KNN Hyperparameters
 
-Training Input: recordIO-profotbuf or csv, can use file or pipe modes on either file type.
+1. K.
+2. Sample_size.
 
-### Important Hyperparameters:
+Instance types:
 
-1. Algorithm_mode
-2. Subtract_mean: unbias data
+- `ml.m5.2xlarge` and `ml.p2.xlarge` are commonly used for training.
+- CPU is preferred for lower-latency inference.
+- GPU can help with higher throughput on larger batches.
 
-Instance types: CPU or GPU can be used and it depends on the specifics of the input data about which one to use.
+## K-Means Clustering in Sagemaker
+
+K-means is an unsupervised clustering algorithm that divides data into K groups so that members of each group are as similar as possible.
+
+Training input:
+
+- Uses RecordIO-Protobuf or CSV.
+- Supports file mode and pipe mode.
+
+### K-Means Hyperparameters
+
+1. K: choosing K is difficult, so it is common to inspect the within-cluster sum of squares across values of K.
+2. Mini_batch_size.
+3. Extra_center_factor.
+4. Init_method.
+
+Instance types:
+
+- CPU or GPU can be used.
+- CPU is usually recommended.
+- `ml.g4dn.large` is a common GPU option.
+
+## Principal Component Analysis in Sagemaker
+
+PCA is used for dimensionality reduction by projecting high-dimensional data into fewer dimensions while preserving as much information as possible.
+
+It works by:
+
+1. Building a covariance matrix.
+2. Applying singular value decomposition.
+3. Producing components ordered by explained variance.
+
+There are two modes:
+
+1. Regular mode: good for sparse data and a moderate number of observations.
+2. Randomized mode: good for large numbers of observations and features.
+
+Training input:
+
+- Uses RecordIO-Protobuf or CSV.
+- Supports file mode and pipe mode.
+
+### PCA Hyperparameters
+
+1. Algorithm_mode.
+2. Subtract_mean: centers the data.
+
+Instance types:
+
+- CPU or GPU can be used depending on the input data and workload.
 
 ## Factorization Machines in Sagemaker
 
-Factorisation machines are used for dealing with sparse data. This algorithm can be used for click prediction, item recommendations. It comes about as an individual doesnt interact with most pages/products, there is sparse data. A form of supervised ML, classification or regression and limited to pair-wise interactions.
+Factorization Machines are used for sparse data and are common in recommendation systems and click prediction.
 
-Factorisation machines finds factors which can be used to predict a classification, ie whether a purchase has been made or not. Usually used in the context of recommender systems. 
+They are useful when:
 
-Training input: recordIO-Protobuf with Float32. If there is sparse data then this means using csv as input data isnt practical.
+1. Most users interact with only a small subset of items.
+2. Pairwise feature interactions matter.
+3. You want a supervised model for classification or regression.
 
-### Important hyperparameters:
+Training input:
 
-1. Initialisatiom methods for bias, factors and linear terms
-2. Uniform, normal or constant
-3. Can tune properties of each method
+- Uses RecordIO-Protobuf with Float32.
+- CSV is not practical for sparse data in this case.
 
-Instance types: CPU or GPU where CPU is recommended and GPU works with dense data
+### Factorization Machines Hyperparameters
+
+1. Initialisation methods for bias, factors, and linear terms.
+2. Uniform, normal, or constant initialisation.
+3. Additional method-specific tuning options.
+
+Instance types:
+
+- CPU is recommended.
+- GPU can also work, especially with denser data.
 
 ## IP Insights in Sagemaker
 
-Unsupervised learning of IP address usage patterns, identifies suspicious behaviour from IP addresses such as identifing logins from anomalous IPs and identifing accounts which create resources from anomalous IPs. Uses a neural network to learn latent vector representations of entities and IP addresses. Entities are hashed and embedded with many entities needing a large hash size.
+IP Insights is an unsupervised learning service for discovering IP address usage patterns and suspicious behaviour.
 
-IP insights can also generate negative samples during training by randomly pairing entities and IPs. 
+It can help identify:
 
-Training input: usernames, accountids can be fed in directly with no need for pre processing of this data. CSV input only with entities and IPs being a part of that csv file. 
+1. Logins from anomalous IP addresses.
+2. Accounts creating resources from anomalous IP addresses.
 
-### Important hyperparameters:
+It uses a neural network to learn latent vector representations of entities and IP addresses. Entities are hashed and embedded, so large hash sizes are needed when there are many entities.
 
-1. Num_entity_vectors: hash_size, set to twice the number of unique entity identifiers.
-2. Vector_dim: size of embedding vectors, scales model size, too large a vector dimension results in overfitting.
-3. Epochs, learning_rate, batch_size etc.
+Training also includes negative sampling by randomly pairing entities and IPs.
 
-Instance types: CPU or GPU can be used but GPU is recommended or multiple GPUs. The size of the instance.
+Training input:
+
+- CSV only.
+- Can include usernames and account IDs directly.
+- No extra preprocessing is required beyond the CSV format.
+
+### IP Insights Hyperparameters
+
+1. Num_entity_vectors: hash size; often set to about twice the number of unique entity identifiers.
+2. Vector_dim: size of the embedding vectors; too large can cause overfitting.
+3. Epochs, learning_rate, batch_size, and related training settings.
+
+Instance types:
+
+- CPU or GPU can be used.
+- GPU is recommended, including multiple GPUs for larger workloads.

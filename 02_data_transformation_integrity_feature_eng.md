@@ -1,213 +1,226 @@
-# EMR 
+# EMR
 
-Elastic map reduce which is managed hadoop framework on EC2 instances. Includes spark, HBase, Presto, Flink and Hive. EMR notebooks can be used for data transformation and processing. EMR also has several integration points with other AWS services.
+Elastic MapReduce is AWS-managed Hadoop on EC2. It includes Spark, HBase, Presto, Flink, and Hive. EMR Notebooks can be used for data transformation and processing, and EMR integrates with several other AWS services.
 
 ## EMR Cluster
 
-1. Master node: manages the cluster on a single EC2 instance
-2. Core node: Hosts HDFS data and runs tasks which can be scaled up and down but with some risk. 
-3. Task node: runs tasks which does not host data and has no risk of data loss when removing. Spot instances are a good use for task nodes.
+1. Master node: manages the cluster on a single EC2 instance.
+2. Core node: stores HDFS data and runs tasks; scaling it down can risk data loss.
+3. Task node: runs tasks only, does not store data, and can be removed without data loss. Spot instances are a good fit here.
 
 ## EMR Usage
 
-Transient vs long running clusters: A user can spin up task nodes using spot instances for temp capacity, reserved instances can be used on long running clusters which can save $. EMR can be connected directly to master to run jobs and ordered steps can be submitted via the console. 
+- Transient clusters are useful for temporary workloads.
+- Long-running clusters can use reserved instances to reduce cost.
+- EMR jobs can be submitted directly to the master node, and ordered steps can be submitted through the console.
 
-## EMR/AWS Integration
+## EMR / AWS Integration
 
-1. S3: EMR can read and write data directly to S3, which is often used for input and output data storage.
-2. VPC: to configure the virtual network in which you can launch instances.
-3. IAM: to manage permissions and access control for EMR resources.
-4. CloudWatch: for monitoring and logging EMR cluster performance and health.
+1. S3: read and write data directly to S3 for input and output storage.
+2. VPC: define the virtual network where instances launch.
+3. IAM: manage permissions and access control for EMR resources.
+4. CloudWatch: monitor and log cluster performance and health.
 
 ## EMR Storage
 
-1. HDFS: the default storage system for EMR clusters, which is distributed across the cluster nodes.
-2. EMRFS: Accessing S3 as if it were HDFS
-3. EBS: Elastic Block Store can be used for additional storage on EMR instances.
-4. Local Storage: Each EMR instance has local storage that can be used for temporary data processing.
+1. HDFS: default distributed storage for EMR clusters.
+2. EMRFS: access S3 as if it were HDFS.
+3. EBS: add extra storage to EMR instances.
+4. Local storage: temporary storage on each instance for processing.
 
-## EMR Promises
+## EMR Benefits
 
-1. Scalability: EMR can easily scale up or down based on the workload allowing for efficient resource utilisation.
-2. Cost-effectiveness: EMR allows users to pay only for the resources they use, and can leverage spot instances for cost savings. Charged by the hour.
-3. Flexibility: EMR supports a wide range of big data processing frameworks and can be customised to meet specific needs.
-4. EMR can provision new nodes if the core node fails. 
+1. Scalability: scale up or down based on workload.
+2. Cost-effectiveness: pay for what you use and save with Spot Instances.
+3. Flexibility: supports many big data processing frameworks.
+4. Fault tolerance: can provision new nodes if a core node fails.
 
 ## EMR Serverless
 
-EMR Serverless allows users to run big data applications without having to manage the underlying infrastructure. It automatically provisions and scales resources as needed, allowing users to focus on their applications rather than cluster management. This can be particularly beneficial for workloads with variable or unpredictable demand, as it can help optimize costs and improve efficiency.
+EMR Serverless runs big data applications without managing underlying infrastructure. It automatically provisions and scales resources so you can focus on the application rather than cluster management. This is useful for variable or unpredictable demand.
 
-Users can choose an EMR release and runtime (Spark, Hive, Presto). A user can create, start, stop and terminate the EMR serverless application lifecycle by calling APIs.
+You can choose an EMR release and runtime such as Spark, Hive, or Presto, and manage the application lifecycle through APIs.
 
-### Pre Initialised Capacity 
+### Pre-initialized Capacity
 
-Spark jobs add 10% overhead to memory requests for drivers and executors so users have to be sure that the initial capacity of the EMR cluster is 10% more than the job requested.
+Spark jobs add about 10% overhead to memory requests for drivers and executors, so initial capacity should be about 10% higher than the job request.
 
 ### EMR Serverless Security
 
-EMRFS has S3 encryption or CSE at rest. TLS in transit between EMR nodes and S3. Local disk encryption and spark is used for communication between drivers and executors. HTTPS/TLS on S3 policies with aws:SecureTransport.
+- EMRFS supports S3 encryption or client-side encryption at rest.
+- TLS is used in transit between EMR nodes and S3.
+- Local disk encryption can be used.
+- Spark communication between drivers and executors is encrypted.
+- S3 policies can enforce HTTPS with `aws:SecureTransport`.
 
-### How does spark work?
+### How Spark Works
 
-Driver program has a spark context. A cluster manager (spark, YARN) is initiated. Executor is initiated which has a cache and runs tasks. The components with spark core; spark streaming, spark SQL, MLLib and GraphX.
+- The driver program contains the Spark context.
+- A cluster manager such as Spark or YARN is started.
+- Executors run tasks and maintain a cache.
+- Spark core is extended by Spark Streaming, Spark SQL, MLlib, and GraphX.
 
-Spark MLLib is used for ML jobs; classification, regression, decision trees, recommendation engine, clustering (k-means), LDA. 
+Spark MLlib is used for machine learning jobs such as classification, regression, decision trees, recommendation engines, clustering such as k-means, and LDA.
 
 # Feature Engineering
 
-Feature engineering is applying your knowledge of the data, and the model you're using to create better features to train your model with.
+Feature engineering is the process of using your understanding of the data and model to create better features for training.
 
 1. Which features should I use?
-2. Do I need to transform these features in some way? 
+2. Do I need to transform these features?
 3. How do I handle missing data?
-4. Should I create new features from the existing ones?
+4. Should I create new features from existing ones?
 
-Applied ML is basically feature engineering.
+Applied ML is largely feature engineering.
 
-## Curse of dimensionality
+## Curse of Dimensionality
 
-Too many features can be a problem, which leads to sparse data. Every feature is a new dimension.
+Too many features can create sparse data because every feature adds a new dimension. Feature engineering is about selecting the most relevant features for the problem, often using domain knowledge. Unsupervised dimensionality reduction methods such as PCA or k-means can help compress many features into fewer ones.
 
-Feature engineering is selecting the features most relevant to the problem at hand. This is often where domain knowledge comes into play. Unsupervised dimensionality reduction techniques can be used to distill many features into fewer features eg. PCA, K-means
-
-## Inputting missing data
+## Handling Missing Data
 
 ### Mean Replacement
-A column represents a single feature, and it only makes sense to take the mean from other samples of the same feature. Mean replacement doesnt affect the mean or sample size of the overall data set.
 
-Using the median maybe a better choice than the mean when outliers are present, but it only works on column level and cant be used on categorical features making it not very accurate.
+- A column represents a single feature, so mean replacement should be done within that feature.
+- Mean replacement does not change the overall sample size.
+- Median can be a better choice when outliers are present.
+- This works only on numerical columns, not categorical ones.
 
 ### Dropping
-Dropping rows with missing data can lead to loss of information and bias if the missing data is not random. Dropping columns with missing data can also lead to loss of important features.
 
-### Machine Learning 
+- Dropping rows with missing values can remove information and introduce bias if the missingness is not random.
+- Dropping columns with missing values can also remove important features.
 
-Using machine learning algorithms to predict missing values can be more accurate than mean replacement or dropping, but it can also be more complex and time-consuming. It requires selecting an appropriate algorithm and tuning it for the specific dataset.
+### Machine Learning Imputation
 
-KNN: Find K nearest similar rows and average values. Assumes numerical data but not categorical. 
+Using ML to predict missing values can be more accurate than mean replacement or dropping, but it is more complex and time-consuming. It requires choosing an algorithm and tuning it for the dataset.
 
-Deep Learning: Build a ML model to impute data for your ML model, work well with categorical data but its complicated.
+- KNN: finds the nearest similar rows and averages values; works well with numerical data.
+- Deep learning: can be used to impute values, including categorical data, but is more complex.
+- Regression: models linear or non-linear relationships between the missing feature and the other features.
+- MICE: multiple imputation by chained equations, an advanced regression-based approach.
 
-Regression: Finding linear or non linear relationships between the missing feature and other features. The most advanced technique associated with regression is MICE (Multiple imputation by chained equations).
+Getting more data is usually better than imputing data.
 
-Note: Getting hold of more data is better than imputing data. 
+## Unbalanced Data
 
-## Unbalanced data
+Unbalanced data can create biased models that perform poorly on the minority class. It is especially problematic for neural networks.
 
-Unbalanced data can lead to biased models that perform poorly on the minority class. It is mainly a problem with neural networks Techniques to address unbalanced data include:
-
-1. Oversampling: duplicate samples from the minority class. Can be done at random.
-2. Undersampling: Instead of creating more positive cases, remove negative ones. Do not throw data away.
-3. SMOTE: Synthetic minority over sampling technique which artificially generates new samples of the minority class using nearest neighbours. Both generates new samples and undersamples majority class. This technique is generally better than oversampling.
-4. Adjusting thresholds: when making predictions about a classification, there is some sort of threshold of probability at which point the case is flagged as positive. If there are too many false positives then you can simply increase the threshold.
+1. Oversampling: duplicate minority-class samples.
+2. Undersampling: remove majority-class samples instead of creating more positives.
+3. SMOTE: synthetically generates new minority-class samples using nearest neighbours; generally better than simple oversampling.
+4. Threshold adjustment: change the probability threshold used to flag a prediction as positive.
 
 ## Handling Outliers
 
-Variance measures how 'spread out' the data is. Variance is simply the average of the squared differences from the mean.
+Variance measures spread as the average of squared differences from the mean. Standard deviation is the square root of variance.
 
-Standard deviation or sd is the square root of the variance.
-
-Its appropriate to remove outliers from the training data. AWS has the random cut forest algorithm which can deal with outlier detection. Can be found in quicksight, sagemaker, kinesis analytics and more.
+Removing outliers from training data is often appropriate. AWS Random Cut Forest can be used for outlier detection and is available in services such as QuickSight, SageMaker, and Kinesis Analytics.
 
 ### Binning
 
-Binning is a technique for converting continuous data into categorical data. It can be used to reduce the impact of outliers and to create more interpretable models. Binning can be done using equal-width bins, equal-frequency bins, or custom bins based on domain knowledge. It is especially useful when it comes to uncertainty in measurements.
+Binning converts continuous data into categorical data. It can reduce the impact of outliers and make models easier to interpret. Common approaches include equal-width bins, equal-frequency bins, and custom bins based on domain knowledge.
 
 ### Transforming
 
-Transforming is the application of some function to a feature to make it better suited for training e.g. feature data with an exponential trend may benefit from a logarithmic transform.
+Transforming applies a function to a feature to make it more suitable for training. For example, data with an exponential trend may benefit from a logarithmic transform.
 
 ### Encoding
 
-Encoding is the process of converting categorical data into numerical data. This is necessary because most machine learning algorithms require numerical input. Common encoding techniques include one-hot encoding, label encoding, and target encoding.
+Encoding converts categorical data into numerical data. Common techniques include one-hot encoding, label encoding, and target encoding.
 
-### Scaling/Normalisation
+### Scaling / Normalisation
 
-Scaling is the process of transforming features to a common scale. This is important because many machine learning algorithms are sensitive to the scale of the input data. Common scaling techniques include min-max scaling, standardization, and robust scaling. SCIKIT Learn has a preprocessor module which can be used for scaling and normalisation. Most ML models require some sort of feature data to at least be scaled to comparable values.
+Scaling transforms features to a common scale so algorithms that are sensitive to magnitude behave better. Common approaches include min-max scaling, standardisation, and robust scaling. Scikit-learn provides preprocessing tools for this.
 
 ### Shuffling
 
-Shuffling is the process of randomly rearranging the order of the data. This is important because many machine learning algorithms assume that the data is independent and identically distributed (i.i.d.). Shuffling can help to break any correlations between the features and the target variable, which can improve the performance of the model.
+Shuffling randomly rearranges the data order. This helps when algorithms assume independent and identically distributed samples because it breaks unwanted correlations.
 
-# Sagemaker AI
+# SageMaker AI
 
 ## Overview
 
-Sagemaker is built to handle the full ML workflow from deploying models to cleaning/preparing data to training and evaluating models. Sagemaker deploys models through an endpoint, s3 works in conjuction with sagemaker to provide and store training data but also hold model artifacts. ECR holds the inference and training code images. Sagemaker notebooks can provide users with an interface to gain access to s3 data, build modela and deploy trained models via EC2. 
+SageMaker covers the full ML workflow, including preparing data, training, evaluating, and deploying models. Models are deployed through endpoints. S3 stores training data and model artifacts, ECR stores training and inference container images, and SageMaker notebooks provide an interface to access S3 data, build models, and deploy trained models.
 
 ## AI Domains
 
-Domains organise the users, apps and resources
+Domains organize users, apps, and resources.
 
-1. All domains share an EFS volume
-2. User profiles have their own personal apps
-3. Shared spaces can be used to share EFS directory
+1. All domains share an EFS volume.
+2. User profiles have their own personal apps.
+3. Shared spaces can be used to share an EFS directory.
 
-By default, a domain has two VPC's. One for internet access which is managed by sagemaker AI and one for encrypted traffic to the EFS volume which is managed by the user. Users are able route all traffic to their own VPC.
+By default, a domain has two VPCs: one for internet access managed by SageMaker AI, and one for encrypted traffic to the EFS volume managed by the user. Users can route all traffic through their own VPC.
 
-## Data prep on Sagemaker
+## Data Prep on SageMaker
 
-Sagemaker data wrangling is a visual interface to prepare data for training. It has built in transformations and allows users to write their own transformations in python or R. It can be used to clean, transform and explore data before training a model.
+SageMaker Data Wrangler is a visual interface for preparing data for training. It includes built-in transformations and allows custom transformations in Python or R. It can be used to clean, transform, and explore data before training.
 
-Data usually comes from S3, the ideal format varies with the algorithm often RecordIO, Protobuf. Can also ingest data from Athena, EMR, Redshift etc. Apache Spark can integrate with sagemaker as well as scikit learn and numpy for transformations.
+Data usually comes from S3. The ideal format depends on the algorithm, often RecordIO or Protobuf. It can also ingest data from Athena, EMR, Redshift, and other sources. Apache Spark can integrate with SageMaker, along with scikit-learn and NumPy, for transformations.
 
-1. Sagemaker processing: copy data from s3, spin up a processing container which can be built in or user provided, output processed data to s3. 
-2. Training on sagemaker: create a training job using an s3 url with training data, provide url of s3 bucket with output and an ECR path to the training code. There are a bunch of training options such as spark MLLib, tensorflow, PyTorch, custom built docker image or an algorithm purchased from the marketplace.
-3. Deploying trained models: users can save trained model to s3, using a persistent endpoint to make predictions on demand or sagemaker batch transform to get predictions for an entire dataset. Sagemaker also has other options for complex processing, elastic inference and auto scaling, shadow testing to evaluate new models against existing models.
+1. SageMaker Processing: copy data from S3, spin up a processing container, and output processed data back to S3.
+2. Training on SageMaker: create a training job using an S3 URL for training data, provide the output S3 bucket, and point to the ECR path for training code. Options include Spark MLlib, TensorFlow, PyTorch, custom Docker images, or marketplace algorithms.
+3. Deploying trained models: save the model to S3, use a persistent endpoint for on-demand predictions, or use SageMaker Batch Transform for batch predictions. SageMaker also supports complex processing, Elastic Inference, auto scaling, and shadow testing.
 
-## Sagemaker ground truth 
+## SageMaker Ground Truth
 
-Ground truth is a data labelling service which can be used to create labelled datasets for training. It can be used for image, video, text and tabular data. Ground truth can be used to create custom labelling workflows and can also leverage pre-built workflows for common use cases. Ground truth can also be used to create synthetic data for training.
+Ground Truth is a data labeling service for creating labeled training datasets for image, video, text, and tabular data. It supports custom labeling workflows, pre-built workflows, and synthetic data generation.
 
-Ground truth can create its own model as images, as the model learns, only the images which the model is unsure about is sent to human labelers. This can reduce the cost of labeling jobs by 70%. Rekognition and comprehend can also be used to generate labels for training.
+Ground Truth can use a model to route only uncertain images to human labelers, which can reduce labeling cost by up to 70%. Rekognition and Comprehend can also be used to generate labels.
 
-Ground truth plus: this is a turnkey solution which is managed by a team of AWS experts, a user fills in an intake form and can track progress via the plus project portal. After the data has been labeled, it is sent via s3.
+Ground Truth Plus is a managed service where AWS experts handle the labeling workflow. You submit an intake form, track progress in the project portal, and receive the labeled data through S3.
 
-### Amazon Mechnical Turk
+### Amazon Mechanical Turk
 
-Mechanical Turk is a marketplace for human intelligence tasks. It can be used to create custom labelling workflows and can also leverage pre-built workflows for common use cases. Mechanical Turk can be used to create synthetic data for training. A crowdsourcing marketplace to perform simple human tasks - a distributed virtual workforce.
+Mechanical Turk is a marketplace for human intelligence tasks. It can support custom or pre-built labeling workflows and is essentially a distributed virtual workforce for simple human tasks.
 
-## Sagemaker Data Wrangler
+## SageMaker Data Wrangler
 
-Data wrangler is a visual interface to prepare data for training. It has built in transformations and allows users to write their own transformations in python or R. It can be used to clean, transform and explore data before training a model. There are 300+ transformations to choose from or integrate with pandas, pyspark and pyspark SQL. 'Quick model' can be used to train your model with your data and measure its results.
+Data Wrangler is a visual interface for preparing data for training. It offers 300+ transformations and integrates with pandas, PySpark, and PySpark SQL. The Quick Model feature can train a model on the data and measure its results.
 
-Steps: Import data -- preview data -- visualise data -- transform data -- quick model -- export data flow
+Workflow: import data -> preview data -> visualise data -> transform data -> quick model -> export data flow.
 
-## Sagemaker model monitor
+## SageMaker Model Monitor
 
-Model monitor is a service which can be used to monitor the performance of deployed models. It can be used to detect data drift, model drift and bias in the model. Model monitor can also be used to create alerts and notifications when certain thresholds are met. There is no code needed for this feature, can detect new features and anomalies/outliers. Monitoring jobs are scheduled via a monitoring schedule and metrics are emitted to cloudwatch.
+Model Monitor monitors deployed model performance and can detect data drift, model drift, and bias. It can also create alerts and notifications when thresholds are crossed. No code is required. Monitoring jobs run on a schedule and emit metrics to CloudWatch.
 
-There are several monitoring types which include: drift in data quality, drift in model quality, bias drift and feature attribution drift.
+Monitoring types include data quality drift, model quality drift, bias drift, and feature attribution drift.
 
-Model monitor can integrated with sagemaker clarify - sagemaker clarify detects potential bias ie imbalances across groups, ages and income brackets. Clarify can also help explain model behaviour and understand which features contribute most to your predictions.
+Model Monitor integrates with SageMaker Clarify, which detects potential bias such as imbalances across groups, ages, and income brackets. Clarify also helps explain model behaviour and identify which features contribute most to predictions.
 
-There are several bias metrics in sagemaker clarify:
-1. Class Imbalance: one facet or demographic group has fewer training values than the other
-2. Differences in proportions of labels DPL: imbalance in positive outcomes between facet values
-3. Kullback-leiber divergence KL, Jehnsen-shannon divergence JS: how much outcome distributions of facets diverge
-4. Lp-norm: p-norm difference between distributions of outcomes from facets
-5. Total variation distance TVD: L1-norm difference between distributions of outcomes from facets
-6. Kolmogorov-Smirnov KS: Max divergence between outcomes in distributions from facets
-7. Conditional demographic disparity CDD: disparity of outcomes between facets as a whole, and by subgroups
+Bias metrics in Clarify include:
+
+1. Class imbalance: one demographic group has fewer training samples than another.
+2. Difference in proportions of labels (DPL): imbalance in positive outcomes between facet values.
+3. Kullback-Leibler divergence and Jensen-Shannon divergence: how much outcome distributions diverge.
+4. Lp-norm: p-norm difference between outcome distributions.
+5. Total variation distance (TVD): L1-norm difference between outcome distributions.
+6. Kolmogorov-Smirnov (KS): maximum divergence between outcome distributions.
+7. Conditional demographic disparity (CDD): disparity of outcomes between facets overall and by subgroup.
 
 ### Partial Dependence Plots
 
-Partial dependence plots show the relationship between a feature and the predicted outcome of a model. Plots can show you how feature values influence predictions. You can also get back data distributions for each bucket of values.
+Partial dependence plots show the relationship between a feature and a model's predicted outcome. They help show how feature values influence predictions and can also show the data distribution for each bucket of values.
 
 ### Shapley Values
 
-Shapley values are the algorithm used to determine the contribution of each feature toward a models prediction. It basically measurss the impact of dropping individual features but can get complicated when there are alot of features. Assymetric shapley values can be used for time series and the algorithm is used to determine the contribution of input features at each time step towards forecasted predictions.
+Shapley values measure the contribution of each feature to a model prediction. They estimate the impact of dropping individual features and become more complex as the number of features grows. Asymmetric Shapley values can be used for time series to estimate the contribution of input features at each time step to forecasted predictions.
 
-## Sagemaker feature store
+## SageMaker Feature Store
 
-A feature in this context is a property which is used to train a ML model. ML models require fast, secure access to feature data for training and it can also be a challenge to keep the features organised, and share features across different models. Where the features come from is up to the user, a feature store has several feature groups which each have a record identifier, feature name and event time.
+A feature is a property used to train a machine learning model. Feature Store provides fast, secure access to feature data for training and helps keep features organized and reusable across models. Features are grouped into feature groups, each with a record identifier, feature name, and event time.
 
-Data ingestion can be in both streaming or batch forms into the feature store, streaming access can be via Putrecord and Getrecord APIs with Batch access via offline S3 store. 
+Data ingestion can happen in streaming or batch mode. Streaming access uses PutRecord and GetRecord APIs, while batch access uses an offline S3 store.
 
-The feature store has security with data being encrypted at rest and at transit, works with KMS customer master keys and fine grain access control with IAM. Can also be secured with privatelink.
+Feature Store supports encryption at rest and in transit, works with KMS customer managed keys, and supports fine-grained access control with IAM. It can also be secured with PrivateLink.
 
-## Sagemaker Canvas
+## SageMaker Canvas
 
-No code ML for business analysts, can upload csv data and select a column to predict, build and make predictions. Users can also join datasets, allows classification or regression and auto cleans data for missing values, dupes, and outliers. Shares models and datasets with sagemaker studio. Canvas also has generative AI support via bedrock or jumpstart foundational models.
+Canvas is no-code ML for business analysts. Users can upload CSV data, choose a target column, build predictions, and join datasets. It supports classification and regression, automatically cleans missing values, duplicates, and outliers, and shares models and datasets with SageMaker Studio. Canvas also supports generative AI through Bedrock or JumpStart foundation models.
 
------ finish off aws glue, glue databrew, athena sections.
+---
+
+## Pending Topics
+
+Finish off AWS Glue, Glue DataBrew, and Athena sections.

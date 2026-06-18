@@ -2,93 +2,95 @@
 
 ## The Transformer Architecture
 
-The Transformer architecture is a deep learning model that has revolutionized natural language processing (NLP) and has been widely adopted in various applications, including generative AI. It was introduced in the paper "Attention is All You Need" by Vaswani et al. in 2017.
+The Transformer architecture is a deep learning model that changed natural language processing and is widely used in generative AI. It was introduced in the paper *Attention Is All You Need* by Vaswani et al. in 2017.
 
-Transformers started as RNNs and LSTMs and they introduced a feedback loop for propagating information forward. They are useful in modelling sequential things such as time series forecasts, and language which is a series of words or tokens.
+Transformers replaced the sequential bottleneck of RNNs and LSTMs by using attention instead of relying on a strict step-by-step feedback loop. That makes them useful for sequential data such as language and time series, while also allowing much more parallel training.
 
-Encoder/decoder architecture: encoders and decoders are RNNs, but with one vector tying them together, it creates a information bottleneck where information from the start of the sequence can get lost.
+The key ideas from *Attention Is All You Need* are:
 
-'Attention is all you need' is a paper from 2017 which states:
+1. A token is the basic unit of the input sequence.
+2. Transformers handle word order better than older sequence models.
+3. They learn relationships between words more directly.
+4. They remove the sequential limitation that makes RNNs hard to parallelise.
 
-1. A hidden state for each step in the encoder > decoder framework is called a token
-2. Deals better with differences in word order
-3. Starts to have a concept of relationships between words
-4. But RNN's are still sequential in nature and cannot be parallelised
+Transformers are used for chat apps, question answering, text classification, named entity recognition, summarisation, translation, and code generation.
 
-Transformers allow RNNs to become parallelised so that models can train on much more data, using self attention to ditch RNNs for FFNNs, feed forward neural networks.
+## Self-Attention
 
-Transformers can be used in many applications such as: chatbased apps, question answering, text classification, named entity recognition, summarisation, translation, code and text generation.
+Self-attention lets the model weigh the importance of different parts of the input when making predictions. This helps the model focus on the most relevant information in a sequence.
 
-## Self attention and attention based neural networks
+Attention-based networks use self-attention to capture long-range dependencies and produce context-aware representations.
 
-Self attention is a mechanism that allows the model to weigh the importance of different parts of the input when making predictions. It enables the model to focus on relevant information while processing sequences.
+For each token, the model learns three weight matrices:
 
-Attention-based neural networks, such as Transformers, utilize self attention to capture dependencies between different parts of the input sequence. This allows them to effectively model long-range dependencies and generate coherent outputs.
+1. Query (`Wq`).
+2. Key (`Wk`).
+3. Value (`Wv`).
 
-Each encoder or decoder has a list of embeddings (vectors) for each token, self attention produces a weighted average of all the token embeddings which results in tokens being tied to other tokens that are important for its context. A new embedding that captures its meaning in context.
+The attention score is computed by comparing the query and key vectors. The value vectors are then weighted by those scores to produce the final output. Softmax is applied to normalise the scores.
 
-There are three matrices of weights which are learned through back propagation:
+### Masked Self-Attention
 
-1. Query Wq
-2. Key Wk
-3. Value Wv
+Masked self-attention is used in the decoder to stop the model from attending to future tokens during training. That is important for autoregressive generation, where the model should only use current and previous tokens.
 
-The attention score is calculated as the dot product of the query and key matrices, which determines how much focus to place on each token in the input sequence. The value matrix is then weighted by the attention scores to produce the final output.
+GPT uses masked self-attention, while BERT uses a different bidirectional approach.
 
-Dot product is just one similarity function users can use to compute a score for each token by multiplying its query with each key q * k. Softmax is then applied to normalise the scores.
+### Multi-Head Attention
 
-### Masked self attention
+Multi-head attention splits the query, key, and value vectors into multiple heads so the model can learn different relationships in parallel. Each head learns a different view of the input, and the outputs are combined afterward.
 
-In the decoder, masked self attention is used to prevent the model from attending to future tokens during training. This ensures that the model only has access to the current and previous tokens when generating predictions, which is crucial for autoregressive models.
+## Generative Pre-Trained Transformers
 
-GPT can do this effectively but BERT does something else, e.g. 'good' wouldnt be affected by 'novel' but 'novel' can be affected by 'good'. We can repeat the entire process for each token in parallel and get new weightings for each token embedding. This is passed into the feed forward neural network.
+Generative Pre-Trained Transformers, or GPT models, are transformer-based language models pre-trained on large text corpora.
 
-Note: multi headed self attention is when the q, k and v vectors are reshaped into matrices. Then each row of the matrix can be processed in parallel with the number of rows as the number of 'heads'.
+How GPT works:
 
-## Generative Pre Trained Transformers (GPT)
+1. Pre-training: the model learns to predict the next token from previous tokens.
+2. Fine-tuning: the model is adapted to a specific task or domain.
 
-Generative Pre Trained Transformers (GPT) are a type of transformer-based language model that is pre-trained on a large corpus of text data. GPT models are designed to generate coherent and contextually relevant text based on the input they receive. 
+GPT models are decoder-only stacks. Each decoder block typically contains masked self-attention and a feed-forward neural network. Because they learn from unlabelled text and predict the next token, they do not need explicit input-output labels in the traditional supervised sense.
 
-How do they work?
+Input and output processing:
 
-1. Pre-training: GPT models are pre-trained on a large dataset of text, such as books, articles, and websites. During pre-training, the model learns to predict the next word in a sentence given the previous words, which helps it understand language structure and context.
-2. Fine-tuning: After pre-training, GPT models can be fine-tuned on specific tasks or domains by providing additional training data. This allows the model to adapt its knowledge to specific applications, such as chatbots, content generation, or question answering.
+- Tokenisation converts text into tokens.
+- Token embeddings capture semantic similarity between tokens.
+- Positional encoding preserves token order.
+- The decoder stack outputs logits for the next token.
+- Temperature can be used to make token selection more or less random.
 
-GPT models are decoder only, stacks of decoder blocks each consisting of a masked self attention layer and a forward feed neural network. (BERT only consists if encoders) in GPT, there is no concept of input as it generates the next token over and over again. Uses attention to maintain relationships between the words, a user can prompt based on their needs and the model keeps generating given the previous tokens.
+## Large Language Models
 
-There are hundreds of billions of parameters, and getting rid of the inputs and outputs is what allows users to train on unlabelled piles of text.
+Large Language Models, or LLMs, are language models trained on massive text datasets and parameter counts.
 
-GPT: Input processing is done via tokenisation. Token encoding, tokem embedding which captures semantic relationships between tokens and token similarities. Postional encoding captures the position of the token in the input relative to other nearby tokens, uses an interleaved sinusoidal function so it works on any length.
+Key terms:
 
-GPT: Output processing. The stack of decoders outputs a vector at the end, this is multiplied with the token embeddings, and gives you a probability (logits) of each token being the right next token (word) in the sequence. You can randomise things a bit with the temperature parameter setting instead of always picking the highest probability.
+1. Tokens: numerical representations of words or parts of words.
+2. Embeddings: vectors that capture token meaning.
+3. Top-p: probability threshold for token inclusion.
+4. Top-k: selects from the top k token candidates.
+5. Temperature: controls randomness in token selection.
+6. Context window: number of tokens the model can process at once.
+7. Max tokens: limit on the total number of input or output tokens.
 
-## LLMs
+## Transfer Learning for Transformers
 
-Large Language Models (LLMs) are a type of language model that is trained on a massive amount of text data and has a large number of parameters. LLMs, such as GPT-3, have billions of parameters and can generate highly coherent and contextually relevant text.
+Transfer learning adapts a model trained on one task to a different but related task.
 
-Key Terms:
+In transformers, this usually means:
 
-1. Tokens - numerical representations of words or parts of words
-2. Embeddings - mathematical representation (vectors) that encode the meaning of a token
-3. Top P - threshold probability for token inclusion (higher p = more random)
-4. Top K - alternate mechanism where k candidates exist for token inclusion (higher k = more random) 
-5. Temperature - controls randomness in token selection (higher temperature = more random)
-6. Context window - the number of tokens an LLM can process at once
-7. Max tokens - Limit for total number of tokens (on input or output)
-
-## Transfer Learning (fine tuning) transformers
-
-Transfer learning is a technique in machine learning where a model trained on one task is adapted to perform a different but related task. 
-
-In the context of transformers, transfer learning involves taking a pre-trained transformer model and fine-tuning it on a specific task or dataset.
-
-Users are able to freeze specific layers and retrain others, add a layer on top of the pre trained model.
-
-Gpt-x or favourite pre trained model > fine tuning neural network > desired result.
+1. Starting from a pre-trained model.
+2. Freezing some layers.
+3. Fine-tuning the remaining layers on task-specific data.
+4. Optionally adding a new layer on top of the pre-trained model.
 
 ## Generative AI in AWS
 
-1. Foundation models - giant, pre trained transformer models which are fine tuned for specific tasks or new apps. GPT-n, BERT, DALL-E, Llama.
-2. AWS foundation models - Jurassic2, claude from anthropic, stable diffusion from stableai, amazon titan.
+AWS supports generative AI through foundation models and managed services.
 
-Sagemaker studio has a jumpstart feature. Lets you quickly open up a notebook with a given model loaded up and ready to go.
+Key ideas:
+
+1. Foundation models: large pre-trained transformer models that can be adapted for new tasks or applications.
+2. Examples: GPT-style models, BERT, DALL-E, and Llama.
+3. AWS foundation models: Jurassic-2, Claude, Stable Diffusion, and Amazon Titan.
+
+SageMaker Studio includes JumpStart, which lets you quickly open a notebook with a model already loaded and ready to use.

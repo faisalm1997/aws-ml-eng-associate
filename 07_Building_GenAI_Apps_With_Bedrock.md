@@ -1,115 +1,147 @@
 # Amazon Bedrock
 
-Amazon Bedrock is a fully managed service that makes it easy to build and scale generative AI applications using foundation models (FMs) from leading AI startups and Amazon’s own Titan FMs. With Bedrock, you can access a wide variety of FMs through an API, without the need for any infrastructure management. This allows you to focus on building your application while Bedrock handles the underlying infrastructure and scaling.
+Amazon Bedrock is a fully managed service for building and scaling generative AI applications using foundation models from Amazon and third-party providers. It exposes models through APIs so you can focus on the application while Bedrock handles infrastructure and scaling.
 
-## Key Features of Amazon Bedrock
+## Key Features
 
-1. Able to invoke chat, text or image models
-2. Pre-built, own fine tuned models can be used or your own models
-3. Third party models bill you through AWS own pricing strategy
-4. Support for RAG
-5. Support for LLM Agents 
+1. Supports chat, text, and image models.
+2. Allows use of prebuilt, fine-tuned, and custom models.
+3. Uses AWS billing for third-party models.
+4. Supports retrieval-augmented generation.
+5. Supports LLM agents.
 
-Bedrock is serverless and can integrate nicely with the sagemaker canvas.
+Bedrock is serverless and integrates well with SageMaker Canvas.
 
 ## Bedrock API Endpoints
 
-Bedrock provides several API endpoints to interact with the service:
+Bedrock provides multiple endpoints for management and inference.
 
-1. Bedrock: Manage, deploy and train models
-2. Bedrock-runtime: perform inference against models
-3. Bedrock-agent: Manage, deploy and train LLM agents and knowledge bases
-4. Bedrock-agent-runtime: Perform inference against agents and knowledge bases such as InvokeAgent, Retrieve, RetrieveAndGenerate
+1. `bedrock`: manage, deploy, and train models.
+2. `bedrock-runtime`: run inference against models.
+3. `bedrock-agent`: manage, deploy, and train agents and knowledge bases.
+4. `bedrock-agent-runtime`: run inference against agents and knowledge bases using operations such as `InvokeAgent`, `Retrieve`, and `RetrieveAndGenerate`.
 
-## Bedrock Model Access
+## Model Access
 
-Before using any base model, in bedrock, you must first request access to the model. Amazon's own titan models will approve immediately with third party models requiring the user to submit additional information. The user will be billed the third party models rates through AWS. Approval for models only takes a few minutes.
+Before using a base model, you must request access in Bedrock.
 
-## Fine Tuning and Continuous, pre training with Bedrock
+- Amazon Titan models are usually approved quickly.
+- Third-party models may require additional information.
+- Usage is billed at the provider's model rate through AWS.
 
-Bedrock allows you to fine-tune models with your own data, which can help improve the performance of the model on specific tasks. You can also use continuous pre-training to further enhance the model's capabilities. This is particularly useful for adapting the model to specific domains or use cases.
+## Fine-Tuning and Continued Pre-Training
 
-- Fine tuning: this can be otherwise be classes as adapting an LLM to a specific use case. Additional training can be undertaken using your own data which eliminates the need to build up a prompt and saves tokens.
-    - The fine tuned model can be used like any other model
-    - You can fine tune a fine tuned model which will make it smarter overtime
-    - Applications: chatbot, training data which is more recent than what the lLM had, training with proprietary data
-    - Fine tuning custom models: Titan, cohere and meta models can all be fine tuned. Text models can be fine tuned using labeled training pairs of prompts and completions whereas image models can be fine tuned using image s3 paths + image descriptions. Advised to use privatelink and VPC for sensitive training data.
-- Continued pre training: similar to fine tuning but with unlabeled data. Its the act of feeding the model with text to fimilarise a model with documents and whatever other data is useful. Users can keep adding extra data into the model itself, so you dont need to include it in the prompts to get a more reasonable answer back. 
+Bedrock supports both fine-tuning and continued pre-training.
+
+### Fine-Tuning
+
+Fine-tuning adapts an LLM to a specific use case using your own data.
+
+It can:
+
+1. Reduce prompt size.
+2. Save tokens.
+3. Improve performance for domain-specific tasks.
+4. Support use cases such as chatbots, newer training data, and proprietary data.
+
+Supported model types include Titan, Cohere, and Meta models. Text models use labeled prompt-completion pairs, while image models use S3 paths and image descriptions. For sensitive data, use VPC and PrivateLink.
+
+### Continued Pre-Training
+
+Continued pre-training uses unlabeled data to expose the model to more domain text. It helps the model learn your corpus without needing to include that information in every prompt.
 
 ## RAG Fundamentals
 
-Retrieval Augmented Generation (RAG) is a technique that combines retrieval-based methods with generative models to improve the quality of generated responses. In RAG, the model retrieves relevant information from a knowledge base or external sources and uses that information to generate more accurate and contextually relevant responses.
+Retrieval-augmented generation combines retrieval and generation so the model can ground responses in external knowledge.
 
-It is often referred to as an open book exam for LLMs, you query an external database for answers instead of relying on the sole LLM. Those answers are then worked into the prompt for the LLM to work with. 
+Think of it as an open-book exam for LLMs: you query an external data source first, then use those results in the prompt.
 
 Pros:
-    - Faster and cheaper way to incorporate new information into GenAI vs fine tuning
-    - Updating info is a matter of updating the database
-    - Can leverage semantic search via vector stores
-    - Can prevent hallucinations when you ask the model about something which it wasnt trained on
+
+1. Faster and cheaper than fine-tuning for new information.
+2. Updating knowledge is mostly a database update.
+3. Can use semantic search through vector stores.
+4. Helps reduce hallucinations for information the model was not trained on.
 
 Cons:
-    - RAGs can get overcomplicated
-    - Very sensitive to prompt templates you use to incorporate data
-    - Non deterministic and can still cause LLMs to hallucinate
-    - Very sensitive to the relevancy of the information which the user retrieves
 
-## Vector Stores and Knowledge Bases within Amazon Bedrock
+1. Can become complex quickly.
+2. Is sensitive to prompt templates.
+3. Is still non-deterministic and can hallucinate.
+4. Depends heavily on retrieval quality.
 
-Choosing a database: Users can use whatever database they want based on the type of data which is being retrieved.
-    - Graph database: for retrieving product recommendations or relationships  between items
-    - Opensearch: for traditional text search
+## Vector Stores and Knowledge Bases
 
-Note: Elasticsearch, opensearch can be used as a vectorDB.
+Bedrock RAG implementations usually need an embedding model and a vector store.
 
-Embeddings: An embedding is a large vector which is associated with your data. Think of it as a multi dimensional space which are computed such that items which are similar to each other are close to each other in that space. 
+Embeddings are vectors that place similar items near each other in multi-dimensional space. The retrieval flow is:
 
-Embeddings are vectors, so should be stored in a vector database. Within a vector store, leverage embeddings which you might already have for ML. 
+1. Convert the query into an embedding.
+2. Search the vector database for the nearest matches.
+3. Return the top-N most similar items.
 
-Embedding retrieval: A retrieval starts by computing an embedded vector for the thing you want to search for, query the vector db for the top items close to that vector, get back the top-N most similar things. 
+Database options depend on the use case:
 
-Examples of databases which can do vector search: opensearch, elasticsearch, SQL, netpune, redis, mongodb and cassandra.
+1. Graph databases: useful for product recommendations and relationships.
+2. OpenSearch: useful for traditional text search.
+3. Vector-capable databases: OpenSearch, Elasticsearch, SQL, Neptune, Redis, MongoDB, and Cassandra.
+4. Purpose-built vector databases: Pinecone, Weaviate, Chroma, Margo, and Vespa.
 
-Examples of purpose built vector databases: pinecone, weaviate, chroma, margo, vespa etc.
+## Amazon Bedrock Knowledge Bases
 
-## Implementing RAG with amazon bedrock knowledge bases
+Knowledge Bases let you upload documents or structured data into Bedrock and use automatic RAG.
 
-Users are able to upload their own documents or structured data into bedrock knowledge bases. You must use an embedding model, for which model access is needed and you can control the vector dimension. A vector store is also needed to implement a RAG in bedrock in which users can control the 'chunking' of data ie how many tokens are represented by each vector.
+You need:
 
-Using knowledge bases: a knowledge base in bedrock is basically an automatic RAG which you can integrate into an application directly. Can also implement into an agent called Agentic RAG.
+1. An embedding model.
+2. A vector store.
+3. Chunking strategy for splitting data into vectors.
 
-Chunking strategies in bedrock:
-- Semantic Chunking - uses FM to group relevant sentences
-- Hierarchical Chunking - uses smaller chunks as children of a larger chunk
-- Lambda-based - bring your own Lambda that will control the strategy
+Chunking strategies:
 
-## Content filtering with bedrock
+1. Semantic chunking: uses an FM to group relevant sentences.
+2. Hierarchical chunking: uses smaller child chunks under larger parent chunks.
+3. Lambda-based chunking: uses your own Lambda to control the strategy.
 
-Amazon bedrock has certain guardrails:
+Knowledge Bases can also be used with agents for agentic RAG.
 
-- Content filtering for prompts and responses
-- Guardrails works with text foundation models
-- Word and topic filtering for profanities
-- PII removal or masking
-- Contextual grounding check: helps prevent hallucination which measures grounding and relevance of the query
-- Guardrails can be incorporated into agents and knowledge bases
+## Content Filtering and Guardrails
+
+Bedrock guardrails help control prompts and responses.
+
+They can:
+
+1. Filter content in prompts and responses.
+2. Work with text foundation models.
+3. Filter words and topics, including profanities.
+4. Mask or remove PII.
+5. Perform contextual grounding checks to reduce hallucinations.
+6. Be attached to agents and knowledge bases.
 
 ## Amazon Bedrock Agents
 
-LLM Agents: the agent has memory and an ability to plan how to answer a request, and tools it can use in the process. The memory is just the chat history and external data stores. The planning module gives the agent guidance on how to break the question down into sub questions. Prompts associated with each tool are used to guide it on how to use its tools.
+LLM agents can plan, remember, and use tools to answer requests.
 
-'Tools' are just functions provided to the tools API. Prompts guide the LLM on how to use them, tools may access outside information such as retrievers and other py modules, services etc.
+Agent concepts:
 
-How do agents know which tools to use?: In bedrock, action groups define a tool and the prompt informs the foundation model how to use it. The user must define the parameters the lambda function expects.
+1. Memory: chat history and external data stores.
+2. Planning: breaks a task into sub-questions.
+3. Tools: functions the agent can call during execution.
 
-Agents may also have knowledge bases associated with them, an optional add on 'code interpreter' allows the agent to write its own code to answer questions or produce charts. 
+Action groups define tools, and the prompt tells the model how to use them. You define the parameters expected by the Lambda function behind the action group.
 
-Deploying bedrock agents: Create an alias for an agent which creates a snapshot > on demand throughput allows agent to run quotas set at the account level > provisioned throughput allows you to purchase an increased rate and number of tokens for your agent > your app can use the invokeagent request using your alias ID and an agents for amazon bedrock runtime endpoint. 
+Agents can also use knowledge bases, and an optional code interpreter lets the agent write code or produce charts.
 
-## More bedrock features:
+### Deploying Agents
 
-- Imported models: import models from s3, sagemaker
-- Model evaluation: can be automatic or human using the AWS managed team or own team
-- Provisioned throughput
-- Watermark detection: detects if an image was generated by Titan
-- Bedrock studio: creates a webapp workspace for bedrock without aws accounts, uses SSO on integration with IAM and your IDP, users can collaborate on projects and components.
+1. Create an alias, which creates a snapshot of the agent.
+2. Use on-demand throughput or provisioned throughput depending on quota and performance needs.
+3. Call `InvokeAgent` through the Bedrock agent runtime endpoint using the alias ID.
+
+## Additional Bedrock Features
+
+1. Imported models: import models from S3 or SageMaker.
+2. Model evaluation: automatic or human evaluation.
+3. Provisioned throughput: purchase higher token throughput.
+4. Watermark detection: detects whether an image was generated by Titan.
+5. Bedrock Studio: a web workspace for Bedrock projects with SSO and collaboration support.

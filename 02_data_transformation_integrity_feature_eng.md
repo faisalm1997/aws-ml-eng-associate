@@ -219,8 +219,43 @@ Feature Store supports encryption at rest and in transit, works with KMS custome
 
 Canvas is no-code ML for business analysts. Users can upload CSV data, choose a target column, build predictions, and join datasets. It supports classification and regression, automatically cleans missing values, duplicates, and outliers, and shares models and datasets with SageMaker Studio. Canvas also supports generative AI through Bedrock or JumpStart foundation models.
 
----
+## AWS Glue
 
-## Pending Topics
+AWS Glue is a serverless data integration and ETL service. It is commonly used to discover, catalog, clean, transform, and move data between sources such as S3, databases, and analytics tools.
 
-Finish off AWS Glue, Glue DataBrew, and Athena sections.
+Key Glue concepts:
+
+1. Glue Data Catalog: central metadata store for tables, schemas, partitions, and connections.
+2. Crawlers: scan data sources and automatically infer table definitions and schema updates.
+3. Jobs: serverless ETL tasks that run Spark-based transformations.
+4. Triggers and workflows: orchestrate Glue jobs and dependent steps.
+5. Glue Studio: visual interface for building ETL pipelines.
+
+Glue is useful for ML pipelines because it can prepare raw data, create curated datasets, and register them in the catalog so tools like Athena and Lake Formation can query them.
+
+## AWS Glue DataBrew
+
+AWS Glue DataBrew is a visual, no-code data preparation tool for analysts and data engineers. It is designed to clean and normalize data without writing code.
+
+Common uses include:
+
+1. Profiling data to find missing values, duplicates, and anomalies.
+2. Applying pre-built transformations through reusable recipes.
+3. Cleaning and standardising data before loading it into S3, Athena, or downstream ML workflows.
+4. Running batch jobs to apply the same recipe to new datasets.
+
+DataBrew is useful when you want interactive data cleaning before sending data into training pipelines or analytics workflows.
+
+## Amazon Athena
+
+Amazon Athena is a serverless query service that lets you run SQL directly on data stored in S3.
+
+Important points:
+
+1. Athena uses standard SQL for ad hoc querying.
+2. It integrates with the Glue Data Catalog for metadata and table definitions.
+3. It works best with partitioned data and columnar formats such as Parquet or ORC.
+4. It is useful for quick analysis, feature exploration, and preparing datasets without provisioning servers.
+5. It can query common formats such as CSV, JSON, Avro, Parquet, and ORC.
+
+For ML workflows, Athena is often used to inspect raw data, validate feature sets, and build SQL-based preprocessing steps before moving data into training pipelines.

@@ -1,6 +1,6 @@
 # 09. Security, Identity, and Compliance
 
-## 232. Intro: Security, Identity, and Compliance
+## Intro: Security, Identity, and Compliance
 
 AWS security is a shared responsibility model:
 - **AWS** is responsible for security *of* the cloud (hardware, infrastructure, managed services)
@@ -14,7 +14,7 @@ Key pillars:
 
 ---
 
-## 233. Principle of Least Privilege
+## Principle of Least Privilege
 
 > Grant only the permissions required to perform a task — nothing more.
 
@@ -32,7 +32,7 @@ Key pillars:
 
 ---
 
-## 234. Data Masking and Anonymisation
+## Data Masking and Anonymisation
 
 Techniques to protect sensitive data (PII, PHI, financial records):
 
@@ -52,7 +52,7 @@ Techniques to protect sensitive data (PII, PHI, financial records):
 
 ---
 
-## 235. SageMaker Security: Encryption at Rest and in Transit
+## SageMaker Security: Encryption at Rest and in Transit
 
 ### Encryption at Rest
 - SageMaker encrypts all data at rest using **AWS KMS**
@@ -73,7 +73,7 @@ Techniques to protect sensitive data (PII, PHI, financial records):
 
 ---
 
-## 236. SageMaker Security: VPCs, IAM, Logging and Monitoring
+## SageMaker Security: VPCs, IAM, Logging and Monitoring
 
 ### VPC Configuration
 - By default, SageMaker training jobs and endpoints run in a **SageMaker-managed VPC**
@@ -96,7 +96,7 @@ Techniques to protect sensitive data (PII, PHI, financial records):
 
 ---
 
-## 237. IAM Introduction: Users, Groups, Policies
+## IAM Introduction: Users, Groups, Policies
 
 **IAM (Identity and Access Management)** is a global AWS service for managing access.
 
@@ -119,7 +119,7 @@ Techniques to protect sensitive data (PII, PHI, financial records):
 
 ---
 
-## 240. IAM Policies
+## IAM Policies
 
 Policies are JSON documents that define what actions are allowed or denied.
 
@@ -158,7 +158,7 @@ Policies are JSON documents that define what actions are allowed or denied.
 
 ---
 
-## 242. IAM MFA
+## IAM MFA
 
 **Multi-Factor Authentication (MFA)** adds a second layer of security beyond passwords.
 
@@ -177,7 +177,7 @@ Policies are JSON documents that define what actions are allowed or denied.
 
 ---
 
-## 244. IAM Roles
+## IAM Roles
 
 IAM Roles provide **temporary credentials** via **AWS STS (Security Token Service)**.
 
@@ -202,7 +202,7 @@ IAM Roles provide **temporary credentials** via **AWS STS (Security Token Servic
 
 ---
 
-## 246. Encryption 101
+## Encryption 101
 
 ### Symmetric vs. Asymmetric Encryption
 
@@ -226,7 +226,7 @@ IAM Roles provide **temporary credentials** via **AWS STS (Security Token Servic
 
 ---
 
-## 247. AWS KMS (Key Management Service)
+## AWS KMS (Key Management Service)
 
 AWS KMS is a managed service for creating, managing, and using cryptographic keys.
 
@@ -256,7 +256,7 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 
 ---
 
-## 249. Amazon Macie
+## Amazon Macie
 
 **Amazon Macie** is a data security service that uses ML to automatically discover, classify, and protect sensitive data in **Amazon S3**.
 
@@ -272,7 +272,7 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 
 ---
 
-## 250. AWS Secrets Manager
+## AWS Secrets Manager
 
 **AWS Secrets Manager** stores, rotates, and manages secrets (DB passwords, API keys, OAuth tokens).
 
@@ -298,7 +298,7 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 
 ---
 
-## 252. AWS WAF (Web Application Firewall)
+## AWS WAF (Web Application Firewall)
 
 **AWS WAF** protects web applications from common exploits at **Layer 7 (HTTP/HTTPS)**.
 
@@ -321,7 +321,7 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 
 ---
 
-## 253. AWS Shield
+## AWS Shield
 
 **AWS Shield** provides DDoS (Distributed Denial of Service) protection.
 
@@ -335,7 +335,7 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 
 ---
 
-## 254. VPC, Subnets, Internet Gateway, NAT Gateway
+## VPC, Subnets, Internet Gateway, NAT Gateway
 
 ### VPC (Virtual Private Cloud)
 - Logically isolated network within AWS
@@ -364,7 +364,7 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 
 ---
 
-## 255. NACLs, Security Groups, VPC Flow Logs
+## NACLs, Security Groups, VPC Flow Logs
 
 ### Security Groups (SG)
 - **Stateful** — return traffic automatically allowed
@@ -396,7 +396,7 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 
 ---
 
-## 256. VPC Peering, Endpoints, VPN, Direct Connect
+## VPC Peering, Endpoints, VPN, Direct Connect
 
 ### VPC Peering
 - Private connectivity between two VPCs (same or different accounts/regions)
@@ -422,7 +422,7 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 
 ---
 
-## 258. AWS PrivateLink
+## AWS PrivateLink
 
 **AWS PrivateLink** enables private connectivity to AWS services or your own services without exposing traffic to the public internet.
 

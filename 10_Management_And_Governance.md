@@ -1,6 +1,6 @@
 # 10. Management and Governance
 
-## 259. Intro: Management and Governance
+## Intro: Management and Governance
 
 AWS management and governance services provide visibility, control, and optimisation across your AWS environment. Key concerns include:
 
@@ -11,7 +11,7 @@ AWS management and governance services provide visibility, control, and optimisa
 
 ---
 
-## 260. Amazon CloudWatch – Metrics
+## Amazon CloudWatch – Metrics
 
 **Amazon CloudWatch** is the primary monitoring and observability service in AWS.
 
@@ -37,7 +37,7 @@ AWS management and governance services provide visibility, control, and optimisa
 
 ---
 
-## 261. Amazon CloudWatch – Logs
+## Amazon CloudWatch – Logs
 
 CloudWatch Logs centralises log collection, storage, and analysis from AWS services and applications.
 
@@ -72,7 +72,7 @@ CloudWatch Logs centralises log collection, storage, and analysis from AWS servi
 
 ---
 
-## 263. Amazon CloudWatch – Logs Unified Agent
+## Amazon CloudWatch – Logs Unified Agent
 
 The **CloudWatch Unified Agent** is installed on EC2 or on-premises servers to collect both logs and system-level metrics.
 
@@ -93,7 +93,7 @@ The **CloudWatch Unified Agent** is installed on EC2 or on-premises servers to c
 
 ---
 
-## 264. Amazon CloudWatch – Alarms
+## Amazon CloudWatch – Alarms
 
 CloudWatch Alarms trigger actions based on metric thresholds.
 
@@ -126,7 +126,7 @@ CloudWatch Alarms trigger actions based on metric thresholds.
 
 ---
 
-## 266. AWS X-Ray
+## AWS X-Ray
 
 **AWS X-Ray** provides distributed tracing and end-to-end visibility into application requests.
 
@@ -162,7 +162,7 @@ CloudWatch Alarms trigger actions based on metric thresholds.
 
 ---
 
-## 269. Overview of Amazon QuickSight
+## Overview of Amazon QuickSight
 
 > **Note:** Amazon QuickSight is being rebranded as **Amazon Q in QuickSight** / **Amazon Quick Suite**.
 
@@ -186,7 +186,7 @@ CloudWatch Alarms trigger actions based on metric thresholds.
 
 ---
 
-## 270. Types of Visualisations and When to Use Them
+## Types of Visualisations and When to Use Them
 
 Choosing the right visualisation type is critical for communicating insights effectively.
 
@@ -215,7 +215,7 @@ Choosing the right visualisation type is critical for communicating insights eff
 
 ---
 
-## 271. Amazon CloudTrail
+## Amazon CloudTrail
 
 **AWS CloudTrail** records all API calls made in your AWS account — who did what, where, and when.
 
@@ -245,7 +245,7 @@ Choosing the right visualisation type is critical for communicating insights eff
 
 ---
 
-## 273. AWS Config
+## AWS Config
 
 **AWS Config** continuously monitors and records the configuration of AWS resources and evaluates them against desired rules.
 
@@ -274,7 +274,7 @@ Choosing the right visualisation type is critical for communicating insights eff
 
 ---
 
-## 275. CloudWatch vs. CloudTrail vs. Config
+## CloudWatch vs. CloudTrail vs. Config
 
 | | CloudWatch | CloudTrail | Config |
 |---|---|---|---|
@@ -287,7 +287,7 @@ Choosing the right visualisation type is critical for communicating insights eff
 
 ---
 
-## 276. AWS Budgets
+## AWS Budgets
 
 **AWS Budgets** allows you to set custom cost and usage thresholds and receive alerts when they are breached.
 
@@ -313,7 +313,7 @@ Choosing the right visualisation type is critical for communicating insights eff
 
 ---
 
-## 278. AWS Cost Explorer
+## AWS Cost Explorer
 
 **AWS Cost Explorer** provides interactive visualisations and analysis of your AWS costs and usage over time.
 
@@ -335,7 +335,7 @@ Choosing the right visualisation type is critical for communicating insights eff
 
 ---
 
-## 279. AWS Trusted Advisor
+## AWS Trusted Advisor
 
 **AWS Trusted Advisor** inspects your AWS environment and provides real-time recommendations across five categories.
 

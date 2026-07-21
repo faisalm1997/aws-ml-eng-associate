@@ -1,6 +1,6 @@
 # 11. Machine Learning Best Practices
 
-## 280. Intro: Machine Learning Best Practices
+## Intro: Machine Learning Best Practices
 
 Building effective ML systems goes beyond model accuracy. Best practices cover the entire lifecycle — from problem framing through to responsible deployment and ongoing monitoring. AWS provides a set of principles and tools to help teams build ML systems that are reliable, fair, secure, and cost-efficient.
 
@@ -11,7 +11,7 @@ Key themes in this section:
 
 ---
 
-## 281. Designing ML Systems with AWS: Responsible AI
+## Designing ML Systems with AWS: Responsible AI
 
 **Responsible AI** is the practice of designing, building, and deploying ML systems in a way that is safe, fair, transparent, and accountable.
 
@@ -48,7 +48,7 @@ Key themes in this section:
 
 ---
 
-## 282. ML Design Principles and Lifecycle
+## ML Design Principles and Lifecycle
 
 ### ML Design Principles
 
@@ -98,7 +98,7 @@ Each stage feeds back into previous stages — the lifecycle is iterative, not l
 
 ---
 
-## 283. ML Business Goal Identification
+## ML Business Goal Identification
 
 Before writing a single line of code, you must clearly define the business problem and determine whether ML is the right solution.
 
@@ -136,7 +136,7 @@ Avoid ML when:
 
 ---
 
-## 284. Framing the ML Problem
+## Framing the ML Problem
 
 Once the business goal is defined, translate it into a concrete ML problem formulation.
 
@@ -177,7 +177,7 @@ Once the business goal is defined, translate it into a concrete ML problem formu
 
 ---
 
-## 285. Data Processing
+## Data Processing
 
 High-quality data is the foundation of a performant ML model. Data processing encompasses collection, cleaning, transformation, and validation.
 
@@ -231,7 +231,7 @@ High-quality data is the foundation of a performant ML model. Data processing en
 
 ---
 
-## 286. Model Development
+## Model Development
 
 Model development covers algorithm selection, training, hyperparameter tuning, and evaluation.
 
@@ -298,7 +298,7 @@ Model development covers algorithm selection, training, hyperparameter tuning, a
 
 ---
 
-## 287. Deployment
+## Deployment
 
 Deploying a model means making it available to serve predictions in a production environment.
 
@@ -333,7 +333,7 @@ Deploying a model means making it available to serve predictions in a production
 
 ---
 
-## 288. Monitoring
+## Monitoring
 
 Production ML systems degrade over time. Continuous monitoring is essential to detect and respond to quality issues.
 
@@ -377,7 +377,7 @@ Four built-in monitoring types:
 
 ---
 
-## 289. AWS Well-Architected Machine Learning Lens
+## AWS Well-Architected Machine Learning Lens
 
 The **AWS Well-Architected Framework** provides architectural best practices across six pillars. The **Machine Learning Lens** extends these pillars to ML-specific workloads.
 

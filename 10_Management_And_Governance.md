@@ -1,5 +1,26 @@
 # 10. Management and Governance
 
+> **Exam Domain:** ML Implementation and Operations (approx. 20% of exam)
+
+## 🎯 Key Exam Topics
+- CloudWatch metrics: namespaces, dimensions, retention, custom metrics
+- Key SageMaker endpoint metrics: `Invocations`, `ModelLatency`, `InvocationErrors`
+- CloudWatch Logs: log groups, log streams, log insights queries, metric filters
+- CloudWatch Alarms: threshold-based alerting, states (OK, ALARM, INSUFFICIENT_DATA)
+- CloudWatch Unified Agent: collects memory, disk, and process metrics not available by default
+- AWS CloudTrail: API call logging for compliance and security auditing
+- AWS Config: resource configuration change tracking and compliance rules
+- Cost Explorer and AWS Budgets for cost management
+
+## ⚠️ Common Exam Traps
+- **Memory utilisation is NOT available as a default EC2 CloudWatch metric** — requires the CloudWatch Unified Agent
+- **CloudTrail** records API calls (who, what, when, from where); **CloudWatch** records metrics and logs — do not confuse them
+- **CloudWatch Alarms** are for threshold-based alerting; **Model Monitor** is for ML-specific drift detection
+- **Log Insights** is an interactive query tool for CloudWatch Logs — not the same as Kinesis or Athena
+- SSM Parameter Store can centrally store the CloudWatch Unified Agent config for fleet-wide deployment
+
+---
+
 ## Intro: Management and Governance
 
 AWS management and governance services provide visibility, control, and optimisation across your AWS environment. Key concerns include:
@@ -372,3 +393,20 @@ Choosing the right visualisation type is critical for communicating insights eff
 | **Budgets** | Cost and usage alerts with optional automated actions |
 | **Cost Explorer** | Cost analysis, forecasting, and savings recommendations |
 | **Trusted Advisor** | Best-practice recommendations across cost, security, and performance |
+
+---
+
+## 📋 Module 10 — Quick Summary
+
+| Topic | Must-Know Fact |
+|---|---|
+| CloudWatch metrics | Time-series data; 1-min default resolution; 1-sec high resolution |
+| Memory utilisation | NOT a default EC2 metric; requires CloudWatch Unified Agent |
+| CloudWatch Alarms | Threshold-based; states: OK, ALARM, INSUFFICIENT_DATA |
+| CloudWatch Logs Insights | Interactive query language for log analysis |
+| CloudWatch Unified Agent | Collects logs + system metrics (memory, disk, process) |
+| CloudTrail | Records all AWS API calls; who, what, when, from where |
+| AWS Config | Tracks resource configuration changes; evaluates compliance rules |
+| Cost Explorer | Visualise and analyse AWS spending over time |
+| AWS Budgets | Set spend or usage budgets with alerts |
+| SSM Parameter Store | Centralised config storage; used for Unified Agent config |

@@ -1,3 +1,24 @@
+# 04. SageMaker Built-in Algorithms
+
+> **Exam Domain:** ML Solution Design / Model Development (approx. 30% of exam)
+
+## 🎯 Key Exam Topics
+- Linear Learner: use cases, input format, key hyperparameters (`target_recall`, `target_precision`, L1/L2)
+- XGBoost: input formats, `scale_pos_weight` for imbalanced data, overfitting hyperparameters (`subsample`, `max_depth`, `eta`)
+- LightGBM: use cases, CPU-optimised, `min_data_in_leaf` for overfitting
+- Seq2Seq: input format (RecordIO-Protobuf integer tokens + vocab), GPU required
+- SageMaker input modes: File, Fast File, Pipe, FSx for Lustre — and when to use each
+
+## ⚠️ Common Exam Traps
+- **XGBoost input formats:** CSV and libSVM are the primary ones, but it also supports RecordIO-Protobuf and Parquet — the exam may include all four as options
+- **Seq2Seq requires RecordIO-Protobuf with *integer* tokens** — not raw text, not CSV
+- **`scale_pos_weight`** is an XGBoost hyperparameter for class imbalance, *not* a Linear Learner hyperparameter
+- **S3 Fast File Mode** allows training to start before the full download — Pipe Mode also streams but is older
+- **FSx for Lustre and EFS both require a VPC** — File/Fast File/Pipe do not
+- Multi-GPU rarely helps Linear Learner
+
+---
+
 # Sagemaker Built In Algorithms
 
 ## Introducing Sagemaker
@@ -508,3 +529,22 @@ Instance types:
 
 - CPU or GPU can be used.
 - GPU is recommended, including multiple GPUs for larger workloads.
+
+---
+
+## 📋 Module 04 — Quick Summary
+
+| Algorithm | Problem Type | Input Format | Key Hyperparameters |
+|---|---|---|---|
+| Linear Learner | Regression, Classification | RecordIO-protobuf, CSV | `target_recall`, `target_precision`, `l1`, `wd` |
+| XGBoost | Regression, Classification, Ranking | CSV, libSVM, RecordIO-Protobuf, Parquet | `scale_pos_weight`, `subsample`, `max_depth`, `eta` |
+| LightGBM | Classification, Regression, Ranking | CSV, text | `num_leaves`, `min_data_in_leaf`, `max_depth` |
+| Seq2Seq | Translation, Summarisation, STT | RecordIO-Protobuf (integer tokens) + vocab | GPU required |
+
+| Input Mode | When to Use |
+|---|---|
+| S3 File Mode | Default; small-to-medium datasets |
+| S3 Fast File Mode | Training starts before full download; sequential access |
+| Pipe Mode | Large datasets; streams from S3 |
+| FSx for Lustre | Very large datasets; requires VPC |
+| EFS | Data already in EFS; requires VPC |

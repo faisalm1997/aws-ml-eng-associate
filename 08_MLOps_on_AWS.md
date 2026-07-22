@@ -1,3 +1,29 @@
+# 08. MLOps on AWS
+
+> **Exam Domain:** ML Implementation and Operations (approx. 20% of exam)
+
+## 🎯 Key Exam Topics
+- Deployment strategies: blue/green, canary, linear, shadow test — differences and rollback behaviour
+- Production variants for A/B testing
+- Spot Instances + checkpointing for cost-effective training
+- Inference options: real-time, serverless, async, batch transform — and when to use each
+- SageMaker Model Monitor: data quality drift, model quality drift, bias drift
+- SageMaker Neo for edge deployment + IoT Greengrass
+- Auto scaling with `SageMakerVariantInvocationsPerInstance`
+- Inference Pipeline (chaining 2–15 containers)
+- SageMaker Inference Recommender
+
+## ⚠️ Common Exam Traps
+- **Shadow tests do NOT return responses to users** — they compare model behaviour in the background
+- **Canary and linear deployments support automatic rollback via CloudWatch alarms; shadow tests do not**
+- **Batch transform = no persistent endpoint** — most cost-effective for offline large-scale inference
+- **Serverless inference has cold starts** — not appropriate for strictly low-latency requirements
+- **Spot Instance training requires checkpointing to S3** — without it, an interruption means starting from epoch 0
+- **SageMaker Neo requires the same instance type for compilation and deployment**
+- Inference Recommender needs the model registered in **SageMaker Model Registry** first
+
+---
+
 # MLOps on AWS
 
 MLOps combines Machine Learning and DevOps practices to automate and streamline the deployment, monitoring, and maintenance of ML models in production. It bridges the gap between data scientists and operations teams to ensure models are reliable, scalable, and continuously improved.
@@ -336,3 +362,22 @@ Data filters in Lake Formation provide fine-grained access control over data sto
 - Filters are applied at query time via the Lake Formation permission engine when data is accessed through Athena, Redshift Spectrum, EMR, or Glue
 - Filters are attached to tables in the Glue Data Catalog and assigned to IAM principals (users, roles)
 - ML use case: ensure that model training jobs executed by different teams only read the subset of data they are permitted to use, without duplicating or masking datasets manually
+---
+
+## 📋 Module 08 — Quick Summary
+
+| Topic | Must-Know Fact |
+|---|---|
+| Canary deployment | Small % to new model first; auto-rollback via CloudWatch alarm |
+| Blue/green deployment | Full traffic shift; safe promotion |
+| Shadow test | New model gets copy of traffic; responses NOT returned to users |
+| Batch transform | Offline inference on large datasets; no persistent endpoint |
+| Serverless inference | Sporadic traffic; cold starts; pay per invocation |
+| Async inference | Large payloads or long processing; results stored in S3 |
+| Spot Instances | Up to 90% savings; requires checkpointing to S3 |
+| Model Monitor | Detects data quality drift, model quality drift, bias drift |
+| Auto scaling | Uses `SageMakerVariantInvocationsPerInstance` metric |
+| SageMaker Neo | Compile once; deploy to cloud or edge; same instance type for both |
+| Inference Pipeline | Chain 2–15 containers in one endpoint |
+| Inference Recommender | Benchmark instance types; needs model in Model Registry first |
+| Production variants | Multiple model versions on one endpoint with traffic weights |

@@ -1,5 +1,27 @@
 # 09. Security, Identity, and Compliance
 
+> **Exam Domain:** Security and Compliance (approx. 12% of exam)
+
+## 🎯 Key Exam Topics
+- Shared responsibility model: AWS vs. customer responsibilities
+- Principle of least privilege: IAM roles, permission boundaries, resource-specific ARNs
+- SageMaker encryption: KMS at rest, TLS in transit, inter-container traffic encryption
+- SageMaker VPC mode: `enable_network_isolation`, VPC endpoints (PrivateLink)
+- Data masking techniques: masking, tokenisation, pseudonymisation, anonymisation
+- Amazon Macie for PII discovery in S3
+- IAM policy types: managed (AWS), managed (customer), inline, resource-based
+- CloudTrail for API audit; CloudWatch for metrics and logs
+
+## ⚠️ Common Exam Traps
+- **`enable_network_isolation=True`** blocks all outbound internet from the container — VPC endpoint still needed for S3 access
+- **Inter-container traffic encryption** adds overhead — enable only when required for distributed training
+- **Amazon Macie** discovers PII in S3; **AWS Glue** can mask it in ETL pipelines — they work together
+- **CloudTrail** = who did what (API audit); **CloudWatch** = what is happening now (metrics/logs) — know the difference
+- **Inline policies are deleted when the identity is deleted** — prefer customer-managed policies for reusability
+- Resource-based policies on S3 are required for cross-account access, not just IAM roles
+
+---
+
 ## Intro: Security, Identity, and Compliance
 
 AWS security is a shared responsibility model:
@@ -459,3 +481,21 @@ AWS KMS is a managed service for creating, managing, and using cryptographic key
 | **CloudTrail** | API audit logging |
 | **VPC + PrivateLink** | Network isolation and private connectivity |
 | **Security Hub** | Centralised security findings aggregation |
+
+---
+
+## 📋 Module 09 — Quick Summary
+
+| Topic | Must-Know Fact |
+|---|---|
+| Shared responsibility | AWS = security *of* the cloud; Customer = security *in* the cloud |
+| Least privilege | Start with zero; scope IAM to specific resource ARNs |
+| Network isolation | `enable_network_isolation=True` blocks all outbound internet |
+| VPC endpoint | Keeps traffic within AWS network (PrivateLink) |
+| Inter-container encryption | Encrypts distributed training traffic; adds overhead |
+| KMS | Encrypts S3, EBS, Feature Store at rest; CMK or AWS-managed key |
+| Amazon Macie | Discovers and classifies PII in S3 |
+| CloudTrail | Who called which API, when, from where |
+| IAM inline policy | Deleted when the attached identity is deleted |
+| Permission boundary | Caps the maximum permissions a role/user can have |
+| IAM Access Analyzer | Identifies unused permissions and over-privileged roles |

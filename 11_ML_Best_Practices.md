@@ -1,5 +1,26 @@
 # 11. Machine Learning Best Practices
 
+> **Exam Domain:** Responsible AI and ML Best Practices (approx. 10% of exam)
+
+## 🎯 Key Exam Topics
+- Responsible AI pillars: fairness, explainability, privacy, robustness, transparency, accountability, safety
+- SageMaker Clarify: pre-training bias, post-training bias, SHAP values for explainability
+- Bias metrics: Class Imbalance (CI), Difference in Positive Proportions (DPP), Disparate Impact (DI)
+- SageMaker Model Cards for model documentation
+- Amazon Augmented AI (A2I) for human review of low-confidence predictions
+- ML lifecycle stages and the AWS tooling for each stage
+- ML design principles: start simple, iterate quickly, data-centric thinking, reproducibility
+
+## ⚠️ Common Exam Traps
+- **SageMaker Clarify detects *both* bias *and* provides explainability (SHAP)** — it is not just a bias tool
+- **Pre-training bias** is in the data before training; **post-training bias** is introduced or amplified by the model
+- **A2I adds human review** to predictions — not model retraining or bias detection
+- **Model Cards** are documentation artifacts, not monitoring tools
+- **Data drift → Model Monitor; bias → Clarify** — know which tool addresses which problem
+- The ML lifecycle is **iterative**, not linear — each stage can feed back into previous ones
+
+---
+
 ## Intro: Machine Learning Best Practices
 
 Building effective ML systems goes beyond model accuracy. Best practices cover the entire lifecycle — from problem framing through to responsible deployment and ongoing monitoring. AWS provides a set of principles and tools to help teams build ML systems that are reliable, fair, secure, and cost-efficient.
@@ -425,3 +446,21 @@ The **AWS Well-Architected Framework** provides architectural best practices acr
 | **Deployment** | Use canary or blue/green deployments to safely roll out new model versions |
 | **Monitoring** | Monitor data drift, model quality, and business KPIs continuously |
 | **Automation** | Automate the end-to-end pipeline with SageMaker Pipelines and MLOps practices |
+
+---
+
+## 📋 Module 11 — Quick Summary
+
+| Topic | Must-Know Fact |
+|---|---|
+| SageMaker Clarify | Detects pre-training AND post-training bias; provides SHAP explainability |
+| SHAP | Attributes prediction contributions to individual features (local + global) |
+| Pre-training bias | Imbalance in training data before a model is trained |
+| Post-training bias | Bias introduced or amplified by the model itself |
+| Disparate Impact (DI) | Ratio of positive outcomes between demographic groups |
+| Model Cards | Documentation artifacts: purpose, training details, limitations |
+| A2I | Human review workflow for low-confidence or high-risk predictions |
+| Data drift | Statistical change in input features over time; detected by Model Monitor |
+| Model quality drift | Degrading prediction accuracy over time; detected by Model Monitor |
+| ML lifecycle | Iterative: business goal → framing → data → features → training → eval → deploy → monitor |
+| SageMaker Pipelines | Automates end-to-end ML workflow (CI/CD for ML) |

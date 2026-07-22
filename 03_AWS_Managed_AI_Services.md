@@ -1,3 +1,24 @@
+# 03. AWS Managed AI Services
+
+> **Exam Domain:** ML Solution Design (approx. 30% of exam)
+
+## 🎯 Key Exam Topics
+- Which managed AI service fits each use case (Rekognition, Textract, Comprehend, Translate, Transcribe, Polly, Lex, Personalize, Kendra, A2I, Q for Business)
+- `DetectModerationLabels` API for content moderation in Rekognition
+- Transcribe accuracy improvements: custom vocabularies vs. custom language models
+- Amazon Lex for chatbots with Lambda intent fulfillment
+- Amazon Augmented AI (A2I) for human review workflows
+- Amazon Q for Business for employee-facing GenAI with enterprise data source connectors
+
+## ⚠️ Common Exam Traps
+- **Textract vs. Rekognition:** Textract extracts structured data (forms, tables) from documents; Rekognition analyses images/videos for labels and moderation
+- **Transcribe vs. Polly:** Transcribe = speech → text; Polly = text → speech
+- **Kendra vs. Q for Business:** Kendra is a search service; Q for Business is a GenAI assistant with enterprise connectors and access control
+- **Lexicons and SSML belong to Polly**, not Transcribe
+- **Custom vocabularies** (Transcribe) hint words; **custom language models** (Transcribe) learn context — know the difference
+
+---
+
 # AWS AI Managed Services
 
 AWS AI managed services are pre-trained ML services for common use cases. They are serverless or highly managed, scale across regions and AZs, and often use specialised hardware for cost and performance efficiency. Pricing is usually pay-as-you-go, with provisioned throughput available for predictable workloads.
@@ -126,3 +147,21 @@ Amazon Q Apps are applications built on top of Amazon Q for Business. They are d
 Amazon Q Developer helps developers build and deploy applications with AWS integrations. It includes tools for creating, managing, testing, and debugging applications, and can integrate with services such as Amazon S3 and Amazon DynamoDB.
 
 It has been rebranded as Kiro.
+
+---
+
+## 📋 Module 03 — Quick Summary
+
+| Service | Primary Use | Key Detail |
+|---|---|---|
+| Comprehend | NLP: entities, sentiment, topics | Custom classification + custom NER |
+| Translate | Language translation | Batch translation of large volumes |
+| Transcribe | Speech → text | Custom vocabularies + custom language models |
+| Polly | Text → speech | Lexicons, SSML, multiple voice engines |
+| Rekognition | Image/video analysis | `DetectModerationLabels` for content moderation |
+| Lex | Chatbots | Intent detection + Lambda slot fulfillment |
+| Personalize | Recommendations | Prebuilt recipes; no ML expertise required |
+| Textract | Document extraction | Structured forms and tables from PDFs/scans |
+| Kendra | Enterprise search | Natural language search over document repositories |
+| A2I | Human review | Low-confidence predictions routed to human reviewers |
+| Q for Business | Employee GenAI assistant | 40+ connectors; respects existing access controls |

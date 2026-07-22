@@ -1,3 +1,26 @@
+# 06. Generative AI Model Fundamentals
+
+> **Exam Domain:** Generative AI and Foundation Models (approx. 20% of exam)
+
+## 🎯 Key Exam Topics
+- Transformer architecture: self-attention, multi-head attention, positional encoding
+- Masked self-attention: what it does and which models use it (GPT)
+- GPT = decoder-only; BERT = bidirectional encoder
+- LLM inference parameters: temperature, top-k, top-p, max tokens, context window
+- Transfer learning with transformers: pre-training → fine-tuning
+- Fine-tuning vs. continued pre-training vs. RAG
+- AWS foundation models: Titan, Claude, Stable Diffusion, Jurassic-2, Llama
+
+## ⚠️ Common Exam Traps
+- **Temperature** controls randomness — higher = more creative/varied, lower = deterministic
+- **Top-p vs. Top-k:** top-p = cumulative probability threshold; top-k = fixed number of candidates
+- **Context window** is the *combined* input + output token limit, not just input
+- **Continued pre-training uses *unlabeled* data; fine-tuning uses *labeled* prompt-completion pairs**
+- **Masked self-attention** prevents future token attendance (GPT) — not the same as standard self-attention (BERT)
+- Transformers replaced RNNs primarily because they allow *parallel training*, not because they are more accurate per se
+
+---
+
 # Generative AI Model Fundamentals
 
 ## The Transformer Architecture
@@ -94,3 +117,23 @@ Key ideas:
 3. AWS foundation models: Jurassic-2, Claude, Stable Diffusion, and Amazon Titan.
 
 SageMaker Studio includes JumpStart, which lets you quickly open a notebook with a model already loaded and ready to use.
+
+---
+
+## 📋 Module 06 — Quick Summary
+
+| Topic | Must-Know Fact |
+|---|---|
+| Transformer | Introduced in "Attention Is All You Need" (2017); replaced RNNs |
+| Self-attention | Each token attends to all others to build context |
+| Masked self-attention | Prevents attending to future tokens; used in GPT (decoder-only) |
+| Multi-head attention | Multiple parallel attention heads; each learns different relationships |
+| GPT | Decoder-only; autoregressive; uses masked self-attention |
+| BERT | Encoder-only; bidirectional; not autoregressive |
+| Temperature | Higher = more random/creative; lower = more deterministic |
+| Top-k | Selects from k most probable tokens |
+| Top-p | Selects from tokens whose cumulative probability ≤ p |
+| Context window | Combined input + output token limit |
+| Continued pre-training | Unlabeled data; teaches domain vocabulary |
+| Fine-tuning | Labeled prompt-completion pairs; adapts model to a task |
+| Transfer learning | Freeze some layers; fine-tune remaining layers on new task |

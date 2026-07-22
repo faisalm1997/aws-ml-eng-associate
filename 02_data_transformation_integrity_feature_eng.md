@@ -1,3 +1,23 @@
+# 02. Data Transformation, Integrity & Feature Engineering
+
+> **Exam Domain:** Data Preparation (approx. 28% of exam)
+
+## 🎯 Key Exam Topics
+- EMR cluster node types and when each is appropriate (master, core, task)
+- When to use transient vs. long-running EMR clusters
+- Feature engineering techniques: missing data, imbalanced data, outliers, dimensionality reduction
+- SMOTE vs. oversampling vs. undersampling
+- PCA for dimensionality reduction
+- SageMaker input modes (File, Fast File, Pipe, FSx for Lustre)
+
+## ⚠️ Common Exam Traps
+- **Core nodes vs. task nodes:** scaling down **core nodes** risks data loss (they store HDFS); scaling down **task nodes** is always safe → use Spot Instances on task nodes only
+- **Mean vs. median imputation:** always prefer median when outliers are present — the exam tests this frequently
+- **SMOTE** generates *synthetic* samples, not duplicates — better than simple oversampling
+- **EMR Serverless** vs. EMR on EC2: Serverless = no cluster management; on EC2 = you manage the cluster
+
+---
+
 # EMR
 
 Elastic MapReduce is AWS-managed Hadoop on EC2. It includes Spark, HBase, Presto, Flink, and Hive. EMR Notebooks can be used for data transformation and processing, and EMR integrates with several other AWS services.
@@ -259,3 +279,20 @@ Important points:
 5. It can query common formats such as CSV, JSON, Avro, Parquet, and ORC.
 
 For ML workflows, Athena is often used to inspect raw data, validate feature sets, and build SQL-based preprocessing steps before moving data into training pipelines.
+
+---
+
+## 📋 Module 02 — Quick Summary
+
+| Topic | Must-Know Fact |
+|---|---|
+| EMR task nodes | Safe for Spot Instances; no HDFS data stored |
+| EMR core nodes | Scaling down risks data loss |
+| Transient clusters | Best for occasional/batch workloads |
+| Missing data (skewed) | Use median, not mean |
+| Class imbalance | SMOTE > oversampling > undersampling |
+| Dimensionality reduction | PCA compresses features; addresses curse of dimensionality |
+| Outlier detection | AWS Random Cut Forest (QuickSight, SageMaker, Kinesis Analytics) |
+| EMR Serverless | No cluster management; auto-scales for variable workloads |
+| EMRFS | Lets EMR treat S3 like HDFS |
+| Spark MLlib in EMR | Classification, regression, k-means clustering, LDA, recommendation |

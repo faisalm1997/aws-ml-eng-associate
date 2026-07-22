@@ -1,3 +1,27 @@
+# 05. Model Training, Tuning and Evaluation
+
+> **Exam Domain:** Model Development and Training (approx. 30% of exam)
+
+## 🎯 Key Exam Topics
+- Activation functions: when to use ReLU, Leaky ReLU, Tanh, Softmax
+- CNN architecture components: Conv2D, MaxPooling2D, Flatten, Dense
+- RNN/LSTM: use cases, BPTT, vanishing gradients, LSTM vs. GRU
+- Regularisation: dropout, early stopping, L1 vs. L2
+- Evaluation metrics: precision, recall, F1, AUC-ROC — and when to use each
+- Confusion matrix interpretation
+- Learning rate and batch size guidance
+- The vanishing gradient problem and solutions
+
+## ⚠️ Common Exam Traps
+- **Softmax is for multiclass output layers only** — do not use on hidden layers or binary output
+- **Recall minimises false negatives; precision minimises false positives** — common scenario: medical diagnosis = maximise recall
+- **L1 creates sparsity (feature selection); L2 keeps all features** — know which to use when
+- **Dying ReLU** problem: neurons output zero for all inputs → fix with Leaky ReLU or PReLU
+- **Vanishing gradients in RNNs** → use LSTM cells, not just more layers
+- **Validation loss increasing while training loss decreases** = classic overfitting → early stopping
+
+---
+
 # Model Training, Tuning and Evaluation
 
 ## Deep Learning Activation Functions
@@ -389,3 +413,24 @@ It:
 1. Provides a high-performance communication layer for distributed training.
 2. Supports models with more than 1T parameters.
 3. Benefits from larger instances, though they are more expensive.
+
+---
+
+## 📋 Module 05 — Quick Summary
+
+| Topic | Must-Know Fact |
+|---|---|
+| Softmax | Output layer of multiclass classifiers only; produces probabilities summing to 1 |
+| ReLU | Default for hidden layers; fast; can suffer dying ReLU |
+| Leaky ReLU | Fixes dying ReLU by adding small negative slope |
+| Tanh | Preferred for RNN hidden layers over sigmoid |
+| Recall | Minimises false negatives (TP / (TP + FN)) |
+| Precision | Minimises false positives (TP / (TP + FP)) |
+| F1 Score | Harmonic mean of precision and recall; use for imbalanced classes |
+| AUC-ROC | Threshold-independent classifier performance metric |
+| L1 | Feature selection; creates sparsity |
+| L2 | Smooth weights; keeps all features |
+| Dropout | Removes random neurons during training; reduces overfitting |
+| Early stopping | Stops training when validation loss stops improving |
+| Vanishing gradient | Fix with LSTM, ResNets, ReLU, or gradient clipping |
+| LSTM | Preserves long-term and short-term state in RNNs |
